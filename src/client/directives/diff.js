@@ -11,7 +11,8 @@ module.directive('diff', ['$stateParams', '$state', '$HUB', '$RPC', 'Reference',
             templateUrl: '/directives/templates/diff.html',
             scope: {
                 file: '=',
-                thread: '='
+                thread: '=',
+                split: '='
             },
             link: function(scope, elem, attrs) {
 

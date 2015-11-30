@@ -32,6 +32,7 @@
             This file was renamed.
         </div>
         <div ng-show="file.patch.length">
+
             <table class="margin">
                 <tr ng-repeat="line in (expanded ? file.file : file.patch) track by $index">
                     <td class="select">
@@ -50,7 +51,9 @@
                     </td>
                 </tr>
             </table>
-            <table class="code">
+
+            <!-- inline code view -->
+            <table class="code" ng-show="!split">
                 <tr ng-repeat="line in (expanded && blob.loaded ? file.file : file.patch) track by $index"
                     ng-click="go(file.filename, line.position)"
                     ng-class="{ addition: line.add, 
@@ -76,7 +79,43 @@
 
                 </tr>
             </table>
+
+            <!-- split code view -->
+            <table class="code inline" ng-show="split">
+                <tr ng-repeat="line in (expanded && blob.loaded ? file.file : file.patch) track by $index"
+                    ng-click="go(file.filename, line.position)"
+                    ng-class="{ addition: line.add, 
+                                deletion: line.del,
+                                disabled: line.disabled, 
+                                chunk: line.chunk }">
+
+                    <td id="{{ anchor($stateParams.base, file.filename, line.position) }}" 
+                        ng-class="{ referenced: openRef(file.filename, line.position), 
+                                    selected: selected(file.filename, line.position) || ($root.ob === 'ob-create' && $index === 1) }"
+                        class="number base">
+                        <pre>{{ line.base }}</pre>
+                    </td>
+
+                    <td class="code" colspan="{{ line.chunk ? 3 : 1 }}">
+                        <pre ng-hide="!line.base && !line.chunk">{{ line.content }}</pre>
+                    </td>
+
+                    <td id="{{ anchor($stateParams.head, file.filename, line.position) }}" 
+                        ng-class="{ referenced: openRef(file.filename, line.position), 
+                                    selected: selected(file.filename, line.position) || ($root.ob === 'ob-create' && $index === 1) }"
+                        class="number head"
+                        ng-show="!line.chunk">
+                        <pre>{{ line.head }}</pre>
+                    </td>
+
+                    <td class="code" ng-show="!line.chunk">
+                        <pre ng-hide="!line.head && !line.chunk">{{ line.content }}</pre>
+                    </td>
+
+                </tr>
+            </table>
         </div>
+
         <div class="image" ng-show="file.image">
             <a ng-href="{{ file.image }}" target="_blank"><img class="center-block" ng-src="{{ file.image }}" /></a>
         </div>
