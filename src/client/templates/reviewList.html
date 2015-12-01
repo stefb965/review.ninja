@@ -155,7 +155,11 @@
               <div class="pull-right">
                 <i class="fa fa-lg fa-spinner fa-spin" ng-show="commenting.loading" style="margin-right:10px;"></i>
                 <i class="fa fa-2x fa-spinner fa-spin center-block" ng-show="conversation.loading"></i>
-                <button type="submit" class="btn btn-primary" ng-disabled="!comment">Comment</button>
+                <button type="submit" class="btn btn-primary" 
+                  analytics-on="click" 
+                  analytics-event="Conversation comment created"
+                  analytics-category="Basic"
+                  ng-disabled="!comment">Comment</button>
               </div>
               <div style="clear:both;"></div>
             </td>
