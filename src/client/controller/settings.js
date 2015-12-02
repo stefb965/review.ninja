@@ -112,7 +112,7 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
                 user: $stateParams.user,
                 repo: $stateParams.repo,
                 required: $scope.reposettings.value.required.threshold,
-                team: $scope.reposettings.value.required.team.name,
+                team: $scope.reposettings.value.required.team.name
             }, function(err, settings) {
               $scope.reposettings.value.required.threshold = settings.value.required.threshold;
               console.log('required team returned %s', settings.value.required.team);
