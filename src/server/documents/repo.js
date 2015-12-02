@@ -16,7 +16,7 @@ var RepoSchema = mongoose.Schema({
     comment: {type: Boolean, default: true},
     threshold: {type: Number, min: 1, default: 1},
     required: {
-        threshold: {type: Number, min:0, default: 0},
+        threshold: {type: Number, min:1, default: 1},
         team: {type: Number}
     }
 });
