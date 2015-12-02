@@ -136,6 +136,33 @@ module.exports = {
             repo.slack.token = !!repo.slack.token;
             done(err, repo.slack);
         });
+    },
+
+    setTeamThreshold: function(req, done) {
+      github.call({
+          obj: 'repos',
+          fun: 'one',
+          arg: { id: req.args.repo_uuid },
+          token: req.user.token
+      }, function(err, repo) {
+          if(err) {
+              return done(err);
+          }
+
+          if(!repo.permissions.admin) {
+              return done({msg: 'Insufficient permissions'});
+          }
+          Repo.findOneAndUpdate({
+              repo: req.args.repo_uuid
+          }, {
+              required: {
+                threshold: req.args.required,
+                team: req.args.team
+              }
+          }, {new: true}, function(err, repo) {
+              done(err, repo);
+          });
+      });
     }
 
 };

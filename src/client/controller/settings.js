@@ -107,18 +107,17 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
           console.log('Setting team threshold %d',  $scope.reposettings.value.required.threshold);
           console.log('Setting team %s',  $scope.reposettings.value.required.team.name);
 
-            /*$RPC.call('repo', 'setTeamThreshold', {
+          $RPC.call('repo', 'setTeamThreshold', {
                 repo_uuid: repo.value.id,
                 user: $stateParams.user,
                 repo: $stateParams.repo,
                 required: $scope.reposettings.value.required.threshold,
-                team: $scope.reposettings.value.required.team,
+                team: $scope.reposettings.value.required.team.name,
             }, function(err, settings) {
-                if(!err) {
-                    $scope.reposettings.value.required.threshold, = settings.value.threshold;
-                    $scope.reposettings.value.required.team = settings.value.team;
-                }
-            });*/
+              $scope.reposettings.value.required.threshold = settings.value.required.threshold;
+              console.log('required team returned %s', settings.value.required.team);
+              $scope.reposettings.value.required.team = settings.value.required.team;
+            });
         };
 
     }]);
