@@ -16,49 +16,24 @@
       <div class="col-md-12" style="margin-top: 10px;" ng-show="repo.value.permissions.admin">
         <p class="settingsheading">Merge threshold</p>
         <div style="margin-left: 15px;">
-          <form name="form">
-            <p>For <strong>{{ repo.value.owner.login }}/{{ repo.value.name }}</strong>
-              <input id="threshold" type="number" min="0" max="99" required name="thresholdvalue"
-                     ng-model="reposettings.value.threshold"
-                     ng-change="changeThreshold()"
-                     ng-pattern="/[0-9]+/"
-                     ng-class="{'text-warning': form.$invalid}"
-                     class="text-right" /> ninja stars are required to merge.
-               <small class="text-danger" ng-show="form.$invalid && reposettings.loaded"><br />Threshold must be between 0 and 99.</small>
-            </p>
-          </form>
-        </div>
-      </div>
-      <div class="col-md-12" style="margin-top: 10px;" ng-show="repo.value.permissions.admin">
-        <p class="settingsheading">Reviewer team</p>
-        <div style="margin-left: 15px;">
-          <p><em>Optional:</em> For <strong>{{ repo.value.owner.login }}/{{ repo.value.name }}</strong> require
-            <input ng-disabled="!reposettings.value.required.team" id="threshold" type="number" min="0" max="99"
+          <p>For <strong>{{ repo.value.owner.login }}/{{ repo.value.name }}</strong> require
+            <input id="threshold" type="number" min="1" max="99"
                 required name="thresholdvalue"
-                ng-model="reposettings.value.required.threshold"
+                ng-model="reposettings.value.threshold"
                 ng-pattern="/[0-9]+/"
-                ng-change="changeTeamThreshold()"
+                ng-change="changeThreshold()"
                 ng-class="{'text-warning': form.$invalid}"
                 class="text-right" /> ninja stars from the following team to merge
-            <div dropdown="" class="btn-group" ng-click="$event.stopPropagation()" is-open="dropdownOpen">
-             <button class="btn btn-xs btn-default dropdown-toggle ng-binding"
-                dropdown-toggle=""
-                type="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">
-                <span ng-show="!reposettings.value.required.team">No team <span class="caret"></span></span>
-                <span ng-show="reposettings.value.required.team" ng-model="">{{reposettings.value.required.team}}<span class="caret"></span></span>
-             </button>
-             <ul class="dropdown-menu" role="menu">
-               <li ng-repeat="team in teams.value" style="padding: 0 10px;">
-                 <a href="" ng-click="reposettings.value.required.team = team; changeTeamThreshold()">
-                   <span>{{team.name}}</span>
-                 </a>
-               </li>
-             </ul>
-           </div>
           </p>
+
+          <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ reposettings.value.reviewers || 'Anyone' }} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li ng-repeat="team in teams.value"><a href="#" ng-click="changeReviewerTeam(team)">{{ team.name }}</a></li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="col-md-12" style="margin-top: 20px;" ng-show="repo.value.permissions.admin">

@@ -103,20 +103,14 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
             org: repo.value.organization.login
         });
 
-        $scope.changeTeamThreshold = function() {
-          console.log('Setting team threshold %d',  $scope.reposettings.value.required.threshold);
-          console.log('Setting team %s',  $scope.reposettings.value.required.team.name);
-
-          $RPC.call('repo', 'setTeamThreshold', {
+        $scope.changeReviewerTeam = function(team) {
+          $RPC.call('repo', 'setReviewers', {
                 repo_uuid: repo.value.id,
                 user: $stateParams.user,
                 repo: $stateParams.repo,
-                required: $scope.reposettings.value.required.threshold,
-                team: $scope.reposettings.value.required.team.name
+                reviewers: team.name
             }, function(err, settings) {
-              $scope.reposettings.value.required.threshold = settings.value.required.threshold;
-              console.log('required team returned %s', settings.value.required.team);
-              $scope.reposettings.value.required.team = settings.value.required.team;
+                $scope.reposettings.value.reviewers = settings.value.reviewers;
             });
         };
 

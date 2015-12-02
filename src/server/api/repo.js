@@ -138,7 +138,7 @@ module.exports = {
         });
     },
 
-    setTeamThreshold: function(req, done) {
+    setReviewers: function(req, done) {
       github.call({
           obj: 'repos',
           fun: 'one',
@@ -155,10 +155,7 @@ module.exports = {
           Repo.findOneAndUpdate({
               repo: req.args.repo_uuid
           }, {
-              required: {
-                threshold: req.args.required,
-                team: req.args.team
-              }
+              reviewers: req.args.reviewers
           }, {new: true}, function(err, repo) {
               done(err, repo);
           });
