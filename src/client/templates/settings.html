@@ -23,10 +23,10 @@
                 ng-pattern="/[0-9]+/"
                 ng-change="changeThreshold()"
                 ng-class="{'text-warning': form.$invalid}"
-                class="text-right" /> ninja stars from the following team to merge
+                class="text-right" /> ninja stars <span ng-show="teams">from the following team</span> to merge
           </p>
 
-          <div class="btn-group">
+          <div ng-show="teams" class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{ reposettings.value.reviewers || 'Anyone' }} <span class="caret"></span>
             </button>

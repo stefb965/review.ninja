@@ -97,11 +97,13 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
             });
         };
 
-        $scope.teams = $HUB.call('orgs', 'getTeams', {
-            user: $stateParams.user,
-            repo: $stateParams.repo,
-            org: repo.value.organization.login
-        });
+        if (repo.value.organization) {
+          $scope.teams = $HUB.call('orgs', 'getTeams', {
+              user: $stateParams.user,
+              repo: $stateParams.repo,
+              org: repo.value.organization.login
+          });
+        }
 
         $scope.changeReviewerTeam = function(team) {
           $RPC.call('repo', 'setReviewers', {
