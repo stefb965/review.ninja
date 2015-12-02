@@ -148,7 +148,6 @@ module.exports = {
           if(err) {
               return done(err);
           }
-
           if(!repo.permissions.admin) {
               return done({msg: 'Insufficient permissions'});
           }
