@@ -19,6 +19,7 @@
           <form name="form">
             <p>For <strong>{{ repo.value.owner.login }}/{{ repo.value.name }}</strong>
               <input id="threshold" type="number" min="0" max="99" required name="thresholdvalue"
+                     analytics-on="change" analytics-event="Change threshold" analytics-category="Advanced" 
                      ng-model="reposettings.value.threshold"
                      ng-change="changeThreshold()"
                      ng-pattern="/[0-9]+/"
