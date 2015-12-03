@@ -135,14 +135,14 @@
             <div class="btn-group pull-right" role="group" ng-show="comp.loaded" style="margin-bottom: 5px;">
               <button type="button" 
                       class="btn btn-sm btn-default" 
-                      ng-class="{active: !split}"
-                      ng-click="split=false">
+                      ng-class="{active: !user.value.prefs.split}"
+                      ng-click="setPref('split', false);">
                 Unified
               </button>
               <button type="button" 
                       class="btn btn-sm btn-default" 
-                      ng-class="{active: split}"
-                      ng-click="split=true">
+                      ng-class="{active: user.value.prefs.split}"
+                      ng-click="setPref('split', true);">
                 Split
               </button>
             </div>
@@ -152,7 +152,7 @@
             <diff ng-repeat="file in comp.value.files"
                   file="file"
                   thread="review.thread"
-                  split="split">
+                  split="user.value.prefs.split">
             </diff>
 
           </tab>

@@ -51,7 +51,7 @@ module.directive('diff', ['$stateParams', '$state', '$HUB', '$RPC', 'Reference',
                                         type: 'disabled',
                                         head: i + 1,
                                         base: ++base,
-                                        content: blob.value.content[i].content,
+                                        content: ' ' + blob.value.content[i].content,
                                         disabled: true
                                     });
                                 }

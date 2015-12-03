@@ -7,6 +7,7 @@ var UserSchema = mongoose.Schema({
     repos: Array,
     token: String,
     terms: String,
+    prefs: Object,
     history: Object
 });
 
