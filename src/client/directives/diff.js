@@ -85,13 +85,13 @@ module.directive('diff', ['$stateParams', '$state', '$HUB', '$RPC', 'Reference',
                     };
 
                     var split = $.map(scope.file.split, function(line) {
-                        return !line.base.chunk ? line : null;
+                        return !line.head && line.base.chunk ? null : line;
                     });
 
                     split.forEach(function(line) {
                         insert(head, line.head.head - 1);
-                        base = line.base.base || base;
-                        head = line.head.head || head;
+                        base = line.base && line.base.base ? line.base.base : base;
+                        head = line.head && line.head.head ? line.head.head : head;
                         fileSplit.push(line);
                     });
 
