@@ -32,26 +32,11 @@
             This file was renamed.
         </div>
         <div ng-show="file.patch.length">
-            <table class="margin">
-                <tr ng-repeat="line in (expanded ? file.file : file.patch) track by $index">
-                    <td class="select">
 
-                        <i ng-show="openRef(file.filename, line.position)"
-                           ng-click="go(file.filename, line.position)"
-                           ng-class="{'wobble-vertical': $root.ob === 'ob-create' && $index === 1}"
-                           class="fa fa-exclamation text-warning" style="padding-left: 8px;">
-                        </i>
+            <!-- inline code view -->
+            <table class="code" ng-show="!split">
 
-                        <i ng-show="closedRef(file.filename, line.position)"
-                           ng-click="go(file.filename, line.position)"
-                           class="fa fa-check text-primary" style="padding-left: 4px;">
-                        </i>
-
-                    </td>
-                </tr>
-            </table>
-            <table class="code">
-                <tr ng-repeat="line in (expanded && blob.loaded ? file.file : file.patch) track by $index"
+                <tr ng-repeat="line in (expanded && blob.loaded ? file.filePatch : file.patch) track by $index"
                     ng-click="go(file.filename, line.position)"
                     ng-class="{ addition: line.add, 
                                 deletion: line.del,
@@ -62,6 +47,17 @@
                         ng-class="{ referenced: openRef(file.filename, line.position), 
                                     selected: selected(file.filename, line.position) || ($root.ob === 'ob-create' && $index === 1) }"
                         class="number">
+
+                        <i ng-show="openRef(file.filename, line.position)"
+                           ng-click="go(file.filename, line.position)"
+                           ng-class="{'wobble-vertical': $root.ob === 'ob-create' && $index === 1}"
+                           class="fa fa-exclamation text-warning select" style="position: absolute; left: 5px;">
+                        </i>
+                        <i ng-show="closedRef(file.filename, line.position)"
+                           ng-click="go(file.filename, line.position)"
+                           class="fa fa-check text-primary select" style="position: absolute; left: 0px;">
+                        </i>
+
                         <pre>{{ line.base }}</pre>
                     </td>
 
@@ -72,11 +68,86 @@
                         <pre>{{ line.head }}</pre>
                     </td>
 
-                    <td class="code"><pre>{{ line.content }}</pre></td>
+                    <td class="content"><pre>{{ line.content }}</pre></td>
+
+                </tr>
+            </table>
+
+            <!-- split code view -->
+            <table class="code inline" ng-show="split">
+
+                <tr ng-repeat="line in (expanded && blob.loaded ? file.fileSplit : file.split) track by $index">
+
+                    <td id="{{ anchor($stateParams.base, file.filename, line.base.position) }}" 
+                        ng-class="{ referenced: openRef(file.filename, line.base.position), 
+                                    selected: selected(file.filename, line.base.position) || ($root.ob === 'ob-create' && $index === 1),
+                                    addition: line.base.add, 
+                                    deletion: line.base.del,
+                                    disabled: !line.base || line.base.disabled, 
+                                    chunk: line.base.chunk }"
+                        ng-click="go(file.filename, line.base.position)"
+                        class="number base">
+
+                        <i ng-show="openRef(file.filename, line.base.position)"
+                           ng-click="go(file.filename, line.base.position)"
+                           ng-class="{'wobble-vertical': $root.ob === 'ob-create' && $index === 1}"
+                           class="fa fa-exclamation text-warning select" style="position: absolute; left: 5px;">
+                        </i>
+                        <i ng-show="closedRef(file.filename, line.base.position)"
+                           ng-click="go(file.filename, line.base.position)"
+                           class="fa fa-check text-primary select" style="position: absolute; left: 0px;">
+                        </i>
+
+                        <pre>{{ line.base.base }}</pre>
+                    </td>
+
+                    <td class="content" 
+                        colspan="{{ line.base.chunk ? 3 : 1 }}"
+                        ng-click="go(file.filename, line.base.position)"
+                        ng-class="{ addition: line.base.add, 
+                                    deletion: line.base.del,
+                                    disabled: !line.base || line.base.disabled, 
+                                    chunk: line.base.chunk }">
+                        <pre>{{ line.base.content }}</pre>
+                    </td>
+
+                    <td id="{{ anchor($stateParams.head, file.filename, line.head.position) }}" 
+                        ng-class="{ referenced: openRef(file.filename, line.head.position), 
+                                    selected: selected(file.filename, line.head.position) || ($root.ob === 'ob-create' && $index === 1),
+                                    addition: line.head.add, 
+                                    deletion: line.head.del,
+                                    disabled: !line.head || line.head.disabled, 
+                                    chunk: line.head.chunk }"
+                        ng-click="go(file.filename, line.head.position)"
+                        class="number head"
+                        ng-hide="line.base.chunk">
+                        <pre>{{ line.head.head }}</pre>
+                    </td>
+
+                    <td class="content" 
+                        ng-hide="line.base.chunk"
+                        ng-click="go(file.filename, line.head.position)"
+                        ng-class="{ addition: line.head.add, 
+                                    deletion: line.head.del,
+                                    disabled: !line.head || line.head.disabled, 
+                                    chunk: line.head.chunk }">
+
+                        <i ng-show="!line.head.normal && openRef(file.filename, line.head.position)"
+                           ng-click="go(file.filename, line.head.position)"
+                           class="fa fa-exclamation text-warning select" style="position: absolute; right: 0;">
+                        </i>
+                        <i ng-show="!line.head.normal && closedRef(file.filename, line.head.position)"
+                           ng-click="go(file.filename, line.head.position)"
+                           class="fa fa-check text-primary select" style="position: absolute; right: -5px;">
+                        </i>
+
+                        <pre>{{ line.head.content }}</pre>
+                    </td>
 
                 </tr>
             </table>
         </div>
+
         <div class="image" ng-show="file.image">
             <a ng-href="{{ file.image }}" target="_blank"><img class="center-block" ng-src="{{ file.image }}" /></a>
         </div>

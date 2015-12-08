@@ -13,6 +13,7 @@ module.controller('ReviewCtrl', ['$scope', '$state', '$stateParams', '$HUB', 'Fi
             if(!err) {
                 comp.value.numbs = File.getLineNumbs(comp.value.files);
                 comp.value.files = File.getFileTypes(comp.value.files);
+                comp.value.files = File.getSplitView(comp.value.files);
             }
         }));
 
