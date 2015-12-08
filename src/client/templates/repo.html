@@ -126,7 +126,10 @@
                   <strong><a ng-href="{{ collaborator.html_url }}" target="_blank">{{ collaborator.login }}</a></strong></br>
                 </td>
                 <td ng-show="!collaborator.ninja" style="vertical-align: middle;">
-                  <button class="btn btn-primary pull-right"
+                  <button class="btn btn-primary pull-right" 
+                          analytics-on="click" 
+                          analytics-event="Invite Team Member"
+                          analytics-category="Advanced"
                           ng-click="invite(collaborator)"
                           ng-show="!collaborator.ninja && !collaborator.invite">
                     Invite to ReviewNinja

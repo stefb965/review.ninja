@@ -108,7 +108,15 @@
                     </li>
                   </ul>
                 </div>
-                <button type="submit" class="btn btn-primary ob-leavecomment"  ng-disabled="!reviewComment">Comment</button>
+                <button 
+                  type="submit"  
+                  analytics-on="click" 
+                  analytics-event="Review comment created"
+                  analytics-category="Basic"
+                  class="btn btn-primary ob-leavecomment"  
+                  ng-disabled="!reviewComment">
+                  Comment
+                </button>
               </div>
 
               <div style="clear:both;"></div>

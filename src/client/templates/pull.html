@@ -21,7 +21,10 @@
             <p ng-bind-html="pull.html"></p>
           </div>
           <merge-button pull="pull"
-                        status="status.value"
+                        status="status.value" 
+                        analytics-on="click" 
+                        analytics-event="Merge PR"
+                        analytics-category="Advanced"
                         permissions="repo.permissions"
                         reposettings="reposettings"
                         protection="branch.value.protection"
@@ -71,6 +74,7 @@
             <li>
               <a href="" 
                  ng-repeat="collaborator in collaborators.value | filter: {login: queryCollaborator}" 
+                 analytics-on="click" analytics-event="Assign user to PR" analytics-category="Advanced" 
                  ng-click="assign(collaborator.login)"
                  style="padding: 3px 10px;">
                 <img src="{{ collaborator.avatar_url }}" width="18px" /> &nbsp;{{ collaborator.login }}
@@ -108,7 +112,10 @@
                   <div class="btn-group btn-group-lg">
                     <button type="button"
                             class="btn btn-ninja"
-                            style="padding-right: 12px; padding-left: 12px;"
+                            style="padding-right: 12px; padding-left: 12px;" 
+                            analytics-on="click" 
+                            analytics-event="Add/Remove ninja star"
+                            analytics-category="Basic"
                             ng-click="setStar()"
                             tooltip="{{ pull.star ? 'Remove' : 'Add' }} ninja star"
                             tooltip-placement="bottom"
