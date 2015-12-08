@@ -40,13 +40,15 @@
           <button type="button" 
                   class="btn btn-default" 
                   ng-class="{active: !user.value.prefs.split}"
-                  ng-click="setPref('split', false);">
+                  ng-click="setPref('split', false);"
+                  analytics-on="click" analytics-event="Unified code view set" analytics-category="Advanced">
             Unified
           </button>
           <button type="button" 
                   class="btn btn-default" 
                   ng-class="{active: user.value.prefs.split}"
-                  ng-click="setPref('split', true);">
+                  ng-click="setPref('split', true);"
+                  analytics-on="click" analytics-event="Split code view set" analytics-category="Advanced">
             Split
           </button>
         </div>
