@@ -157,6 +157,28 @@ module.exports = {
               reviewers: req.args.reviewers
           }, {new: true}, function(err, repo) {
               done(err, repo);
+              github.call({
+                  obj: 'pullRequests',
+                  fun: 'getAll',
+                  arg: {
+                      user: req.args.user,
+                      repo: req.args.repo
+                  },
+                  token: req.user.token
+              }, function(err, pulls) {
+                  if (!err) {
+                      pulls.forEach(function(pull) {
+                          status.update({
+                              user: req.args.user,
+                              repo: req.args.repo,
+                              sha: pull.head.sha,
+                              repo_uuid: req.args.repo_uuid,
+                              number: pull.number,
+                              token: req.user.token
+                          });
+                      });
+                  }
+              });
           });
       });
     }
