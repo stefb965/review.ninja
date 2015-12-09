@@ -66,7 +66,8 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
                 repo_uuid: repo.value.id,
                 user: $stateParams.user,
                 repo: $stateParams.repo,
-                threshold: $scope.reposettings.value.threshold
+                threshold: $scope.reposettings.value.threshold,
+                reviewers: $scope.reposettings.value.reviewers
             }, function(err, settings) {
                 if(!err) {
                     $scope.reposettings.value.threshold = settings.value.threshold;
@@ -105,15 +106,19 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
           });
         }
 
-        $scope.changeReviewerTeam = function(team) {
-          $RPC.call('repo', 'setReviewers', {
-                repo_uuid: repo.value.id,
-                user: $stateParams.user,
-                repo: $stateParams.repo,
-                reviewers: team.name
-            }, function(err, settings) {
-                $scope.reposettings.value.reviewers = settings.value.reviewers;
-            });
+        $scope.changeReviewerTeam = function(teamName) {
+          $RPC.call('repo', 'setThreshold', {
+              repo_uuid: repo.value.id,
+              user: $stateParams.user,
+              repo: $stateParams.repo,
+              threshold: $scope.reposettings.value.threshold,
+              reviewers: teamName
+          }, function(err, settings) {
+              if(!err) {
+                  $scope.reposettings.value.threshold = settings.value.threshold;
+                  $scope.reposettings.value.reviewers = teamName;
+              }
+          });
         };
 
     }]);

@@ -61,7 +61,8 @@ module.exports = {
             Repo.findOneAndUpdate({
                 repo: req.args.repo_uuid
             }, {
-                threshold: req.args.threshold
+                threshold: req.args.threshold,
+                reviewers: req.args.reviewers
             }, {new: true}, function(err, repo) {
                 done(err, repo);
                 github.call({
@@ -81,7 +82,8 @@ module.exports = {
                                 sha: pull.head.sha,
                                 repo_uuid: req.args.repo_uuid,
                                 number: pull.number,
-                                token: req.user.token
+                                token: req.user.token,
+                                reviewers: req.args.reviewers
                             });
                         });
                     }
@@ -136,51 +138,6 @@ module.exports = {
             repo.slack.token = !!repo.slack.token;
             done(err, repo.slack);
         });
-    },
-
-    setReviewers: function(req, done) {
-      github.call({
-          obj: 'repos',
-          fun: 'one',
-          arg: { id: req.args.repo_uuid },
-          token: req.user.token
-      }, function(err, repo) {
-          if(err) {
-              return done(err);
-          }
-          if(!repo.permissions.admin) {
-              return done({msg: 'Insufficient permissions'});
-          }
-          Repo.findOneAndUpdate({
-              repo: req.args.repo_uuid
-          }, {
-              reviewers: req.args.reviewers
-          }, {new: true}, function(err, repo) {
-              done(err, repo);
-              github.call({
-                  obj: 'pullRequests',
-                  fun: 'getAll',
-                  arg: {
-                      user: req.args.user,
-                      repo: req.args.repo
-                  },
-                  token: req.user.token
-              }, function(err, pulls) {
-                  if (!err) {
-                      pulls.forEach(function(pull) {
-                          status.update({
-                              user: req.args.user,
-                              repo: req.args.repo,
-                              sha: pull.head.sha,
-                              repo_uuid: req.args.repo_uuid,
-                              number: pull.number,
-                              token: req.user.token
-                          });
-                      });
-                  }
-              });
-          });
-      });
     }
 
 };
