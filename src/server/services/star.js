@@ -87,11 +87,11 @@ module.exports = {
                         repo_uuid: repo_uuid,
                         token: token
                     });
-
-                    if(typeof done === 'function') {
-                        done(err, star);
-                    }
                 });
+            }
+
+            if(typeof done === 'function') {
+                done(err, star);
             }
         });
     }
