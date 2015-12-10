@@ -30,7 +30,9 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
               }, function(err, teams) {
                 if(!err) {
                     teams.value.forEach(function(team) {
-                        $scope.reviewTeam = team.id.toString() === settings.value.reviewers ? team.name : null;
+                      if(team.id.toString() === settings.value.reviewers) {
+                          $scope.reviewTeam = team.name;
+                      }
                     });
                 }
               });
