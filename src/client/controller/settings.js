@@ -17,9 +17,24 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
 
         $scope.threshold = 1;
         $scope.comment = true;
+        $scope.reviewTeam = null;
 
         $scope.reposettings = $RPC.call('repo', 'get', {
             repo_uuid: repo.value.id
+        }, function(err, settings) {
+            if(!err && repo.value.organization) {
+                $scope.teams = $HUB.call('orgs', 'getTeams', {
+                  user: $stateParams.user,
+                  repo: $stateParams.repo,
+                  org: repo.value.organization.login
+              }, function(err, teams) {
+                if(!err) {
+                    teams.value.forEach(function(team) {
+                        $scope.reviewTeam = team.id.toString() === settings.value.reviewers ? team.name : null;
+                    });
+                }
+              });
+            }
         });
 
         $scope.slack = $RPC.call('repo', 'getSlack', {
@@ -98,25 +113,18 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
             });
         };
 
-        if (repo.value.organization) {
-          $scope.teams = $HUB.call('orgs', 'getTeams', {
-              user: $stateParams.user,
-              repo: $stateParams.repo,
-              org: repo.value.organization.login
-          });
-        }
-
-        $scope.changeReviewerTeam = function(teamName) {
+        $scope.changeReviewerTeam = function(team) {
           $RPC.call('repo', 'setThreshold', {
               repo_uuid: repo.value.id,
               user: $stateParams.user,
               repo: $stateParams.repo,
               threshold: $scope.reposettings.value.threshold,
-              reviewers: teamName
+              reviewers: team ? team.id : null
           }, function(err, settings) {
               if(!err) {
                   $scope.reposettings.value.threshold = settings.value.threshold;
-                  $scope.reposettings.value.reviewers = teamName;
+                  $scope.reposettings.value.reviewers = team ? team.id : null;
+                  $scope.reviewTeam = team ? team.name : null;
               }
           });
         };

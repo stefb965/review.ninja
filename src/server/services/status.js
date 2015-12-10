@@ -17,13 +17,15 @@ module.exports = {
             upsert: true
         }, function(err, repo) {
 
-            repo = repo || {threshold: 1};
+            repo = repo || {threshold: 1, reviewers: null};
 
             pullRequest.status({
                 sha: args.sha,
                 user: args.user,
                 repo: args.repo,
                 number: args.number,
+                threshold: repo.threshold,
+                reviewers: repo.reviewers,
                 repo_uuid: args.repo_uuid,
                 token: args.token
             }, function(err, status) {

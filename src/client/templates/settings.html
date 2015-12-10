@@ -23,18 +23,25 @@
                 ng-pattern="/[0-9]+/"
                 ng-change="changeThreshold()"
                 ng-class="{'text-warning': form.$invalid}"
-                class="text-right" /> ninja stars <span ng-show="teams">from the following team</span> to merge
+                class="text-right" /> 
+              ninja stars <span ng-show="teams">from the following team</span> to merge
           </p>
 
-          <div ng-show="teams" class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{ reposettings.value.reviewers || 'Anyone' }} <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a href="#" ng-click="changeReviewerTeam('Anyone')">Anyone</a></li>
-              <li ng-repeat="team in teams.value"><a href="#" ng-click="changeReviewerTeam(team.name)">{{ team.name }}</a></li>
-            </ul>
-          </div>
+          <button type="button" 
+                  class="btn btn-default dropdown-toggle" 
+                  data-toggle="dropdown" 
+                  aria-haspopup="true" 
+                  aria-expanded="false"
+                  ng-show="teams && teams.loaded">
+            {{ reviewTeam || 'Anyone' }} <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" style="margin-left: 30px;">
+            <li><a href="#" ng-click="changeReviewerTeam(null)">Anyone</a></li>
+            <li ng-repeat="team in teams.value">
+              <a href="#" ng-click="changeReviewerTeam(team)">{{ team.name }}</a>
+            </li>
+          </ul>
+
         </div>
       </div>
       <div class="col-md-12" style="margin-top: 20px;" ng-show="repo.value.permissions.admin">
