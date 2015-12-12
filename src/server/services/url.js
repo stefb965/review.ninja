@@ -28,10 +28,7 @@ module.exports = function() {
     return {
         socket: localSocket,
         baseUrl: baseUrl,
-        webhook: function(id) {
-            return url.resolve(baseUrl, '/github/webhook/' + id);
-        },
-        baseWebhook: url.resolve(baseUrl, '/github/webhook/'),
+        webhook: url.resolve(baseUrl, '/github/webhook'),
         githubBase: githubBase,
         githubApiBase: githubApiBase,
         githubCallback: url.resolve(baseUrl, '/auth/github/callback'),
