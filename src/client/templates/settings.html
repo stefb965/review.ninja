@@ -20,12 +20,12 @@
             <p>For <strong>{{ repo.value.owner.login }}/{{ repo.value.name }}</strong>
               <input id="threshold" type="number" min="0" max="99" required name="thresholdvalue"
                      analytics-on="change" analytics-event="Change threshold" analytics-category="Advanced" 
-                     ng-model="reposettings.value.threshold"
-                     ng-change="changeThreshold()"
+                     ng-model="repoSettings.value.threshold"
+                     ng-change="setRepo({threshold: repoSettings.value.threshold})"
                      ng-pattern="/[0-9]+/"
                      ng-class="{'text-warning': form.$invalid}"
                      class="text-right" /> ninja stars are required to merge.
-               <small class="text-danger" ng-show="form.$invalid && reposettings.loaded"><br />Threshold must be between 0 and 99.</small>
+               <small class="text-danger" ng-show="form.$invalid && repoSettings.loaded"><br />Threshold must be between 0 and 99.</small>
             </p>
           </form>
         </div>
@@ -34,7 +34,7 @@
         <p class="settingsheading">ReviewNinja content in GitHub</p>
         <div style="margin-left: 15px;">
           <div>
-            <input id="comments" type="checkbox" ng-model="reposettings.value.comment" ng-change="toggleComments()" />
+            <input id="comments" type="checkbox" ng-model="repoSettings.value.comment" ng-change="setRepo({comment: repoSettings.value.comment})" />
             <label for="comments">Allow ReviewNinja to comment in <strong>{{ repo.value.owner.login }}/{{ repo.value.name }}</strong> pull request conversations in GitHub.</label>
           </div>
         </div>
@@ -104,38 +104,38 @@
         <form style="margin:10px 15px;">
           <div class="form-group" style="max-width:450px">
             <label>Token</label>
-            <div ng-hide="!updatingSlackToken && slack.value.token === 'true'">
+            <div ng-hide="!updatingSlackToken && slack.value.token.value">
               <input type="password" 
                      class="form-control" 
-                     ng-model="reposettings.value.slack.token"
+                     ng-model="token"
                      ng-model-options="{updateOn: 'blur'}" 
-                     ng-change="setSlack(); updatingSlackToken = false;">
+                     ng-change="setSlack({token: token})">
             </div>
           </div>
           <div class="form-group" style="max-width:450px;">
-            <span class="form-control-static" ng-show="!updatingSlackToken && slack.value.token === 'true'">
-              ****** <a href="" ng-click="updatingSlackToken = true;">click to change</a>
+            <span class="form-control-static" ng-show="!updatingSlackToken && slack.value.token.value">
+              ****** <a href="" ng-click="updatingSlackToken = true">click to change</a>
             </span>
           </div>
-          <div class="form-group" style="max-width:450px">
+          <div class="form-group" ng-show="slack.value.token.value" style="max-width:450px">
             <label>Channel</label>
             <input type="text" 
                    class="form-control" 
                    placeholder="#general" 
-                   ng-model="reposettings.value.slack.channel" 
+                   ng-model="slack.value.channel" 
                    ng-model-options="{updateOn: 'blur'}" 
-                   ng-change="setSlack()">
+                   ng-change="setSlack({channel: slack.value.channel})">
           </div>
-          <div class="form-group" ng-show="slack.value.token === 'true'">
+          <div class="form-group" ng-show="slack.value.token.value">
             <label>Choose the ReviewNinja events that you want posted to Slack</label><br />
 
-            <input type="checkbox" ng-model="reposettings.value.slack.events.star" ng-change="setSlack()" />
+            <input type="checkbox" ng-model="slack.value.events.star" ng-change="setSlack({events: slack.value.events})" />
             <label>Ninja stars</label><br />
 
-            <input type="checkbox" ng-model="reposettings.value.slack.events.pull_request" ng-change="setSlack()" />
+            <input type="checkbox" ng-model="slack.value.events.pull_request" ng-change="setSlack({events: slack.value.events})" />
             <label>New pull requests</label><br />
 
-            <input type="checkbox" ng-model="reposettings.value.slack.events.merge" ng-change="setSlack()" />
+            <input type="checkbox" ng-model="slack.value.events.merge" ng-change="setSlack({events: slack.value.events})" />
             <label>Merged pull requests</label>
           </div>
         </form>
