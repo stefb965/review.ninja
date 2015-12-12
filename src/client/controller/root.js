@@ -16,23 +16,28 @@ module.controller('RootCtrl', ['$rootScope', '$scope', '$stateParams', '$state',
 
             if(!($stateParams.user && $stateParams.repo)) {
                 $scope.hook = {};
+                $scope.token = {};
                 $scope.onboard = {};
                 return;
             }
 
-            if(toParams.user !== fromParams.user || toParams.repo !== fromParams.repo) {
-                $HUB.call('repos', 'get', {
-                    user: $stateParams.user,
-                    repo: $stateParams.repo
-                }, function(err, repo) {
-                    if(!err && repo.value.permissions.admin) {
-                        $scope.hook = $RPC.call('webhook', 'get', {
-                            user: $stateParams.user,
-                            repo: $stateParams.repo
-                        });
-                    }
-                });
-            }
+            // need to check two things here:
+            // 1) webhook exists
+            // 2) repo token is still valid (push and can see review team)
+
+            // if(toParams.user !== fromParams.user || toParams.repo !== fromParams.repo) {
+            //     $HUB.call('repos', 'get', {
+            //         user: $stateParams.user,
+            //         repo: $stateParams.repo
+            //     }, function(err, repo) {
+            //         if(!err && repo.value.permissions.admin) {
+            //             $scope.hook = $RPC.call('webhook', 'get', {
+            //                 user: $stateParams.user,
+            //                 repo: $stateParams.repo
+            //             });
+            //         }
+            //     });
+            // }
         });
 
         $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
