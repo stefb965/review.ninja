@@ -39,6 +39,7 @@ app.use(passport.session());
 app.use('/api', require('./middleware/param'));
 app.use('/api', require('./middleware/authenticated'));
 app.use('/github/webhook', require('./middleware/param'));
+app.use('/github/webhook', require('./middleware/token'));
 
 // papertrail middleware
 app.use('/api', require('./middleware/papertrail'));
@@ -321,13 +322,15 @@ app.all('/api/:obj/:fun', function(req, res) {
 // Handle webhook calls
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.all('/github/webhook/:id', function(req, res) {
+app.all('/github/webhook', function(req, res) {
     var socket = require('./services/socket.js');
     var event = req.headers['x-github-event'];
+
+    if(!webhooks[event]) {
+        return res.status(400).send('Unsupported event');
+    }
+
     try {
-        if(!webhooks[event]) {
-            return res.status(400).send('Unsupported event');
-        }
         webhooks[event](req, res);
     } catch(err) {
         res.status(500).send('Internal server error');
