@@ -7,6 +7,7 @@ var https = require('https');
 // services
 var url = require('../services/url');
 var github = require('../services/github');
+var webhook = require('../services/webhook');
 
 // models
 var User = require('mongoose').model('User');
@@ -81,11 +82,12 @@ module.exports = {
                     }
 
                     if(repo.permissions.admin) {
-                        // create webhook
-                    }
-
-                    if(repo.organization) {
-                        // save token iff user is owner of org
+                        webhook.create({
+                            user: repo.owner.login,
+                            repo: repo.name,
+                            repo_uuid: repo.id,
+                            token: req.user.token
+                        });
                     }
                 }
 
