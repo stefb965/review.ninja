@@ -107,9 +107,9 @@
             <div ng-hide="!updatingSlackToken && slack.value.token.value">
               <input type="password" 
                      class="form-control" 
-                     ng-model="token"
+                     ng-model="slackToken"
                      ng-model-options="{updateOn: 'blur'}" 
-                     ng-change="setSlack({token: token})">
+                     ng-change="setSlack({token: slackToken})">
             </div>
           </div>
           <div class="form-group" style="max-width:450px;">

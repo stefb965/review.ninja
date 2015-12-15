@@ -30,7 +30,7 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
             }
         });
 
-        
+
         //
         // Actions
         //
