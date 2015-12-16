@@ -32,7 +32,8 @@ module.exports = {
                     }, done);
                 }
 
-                Repo.findOneAndUpdate({repo: args.repo_uuid}, {webhook: webhook}, done);
+                repo.webhook = webhook;
+                repo.save(done);
             });
         });
     },
@@ -55,7 +56,7 @@ module.exports = {
     },
 
     remove: function(args, done) {
-        Repo.findOne({repo: args.repo_uuid}, function(err, repo) {
+        Repo.findOne({repo: args.repo_uuid}).select('+webhook').exec(function(err, repo) {
             if(!repo) {
                 return done(err, repo);
             }
@@ -71,7 +72,7 @@ module.exports = {
                 token: args.token
             }, function(err, hook) {
                 if(err) {
-                    return done(err, repo);
+                    return done(err);
                 }
 
                 repo.webhook = null;
