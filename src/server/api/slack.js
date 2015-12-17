@@ -42,7 +42,7 @@ module.exports = {
                 req.args.channel = '#' + req.args.channel;
             }
 
-            Slack.findOneAndUpdate({repo: req.args.repo_uuid}, req.args, {new: true}, done);
+            Slack.findOneAndUpdate({repo: req.args.repo_uuid}, req.args, {new: true, upsert: true}, done);
         });
     },
 

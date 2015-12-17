@@ -50,23 +50,9 @@ module.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$lo
                 resolve: {
                     repo: ['$rootScope', '$stateParams', '$HUBService', '$RPC',
                         function($rootScope, $stateParams, $HUBService, $RPC) {
-                            return $HUBService.call('repos', 'get', {
+                            return $HUBService.wrap('repos', 'get', {
                                 user: $stateParams.user,
                                 repo: $stateParams.repo
-                            }, function(err, repo) {
-                                if(!err && repo.value.permissions.admin) {
-                                    $rootScope.repo_uuid = repo.value.id;
-                                    $rootScope.token = $RPC.call('repo', 'token', {
-                                        user: $stateParams.user,
-                                        repo: $stateParams.repo,
-                                        repo_uuid: repo.value.id
-                                    });
-                                    $rootScope.webhook = $RPC.call('repo', 'webhook', {
-                                        user: $stateParams.user,
-                                        repo: $stateParams.repo,
-                                        repo_uuid: repo.value.id
-                                    });
-                                }
                             });
                         }
                     ]

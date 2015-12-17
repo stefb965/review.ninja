@@ -11,6 +11,7 @@ var webhook = require('../services/webhook');
 
 // models
 var User = require('mongoose').model('User');
+var Repo = require('mongoose').model('Repo');
 
 module.exports = {
 
@@ -59,7 +60,9 @@ module.exports = {
             arg: { id: req.args.repo_uuid },
             token: req.user.token
         }, function(err, repo) {
-
+            if(err) {
+                return done(err);
+            }
             if(!repo.permissions.push) {
                 return done({
                     code: 403,
@@ -85,9 +88,12 @@ module.exports = {
                         webhook.create({
                             user: repo.owner.login,
                             repo: repo.name,
-                            repo_uuid: repo.id,
                             token: req.user.token
                         });
+                    }
+
+                    if(repo.permissions.push) {
+                        Repo.findOneAndUpdate({repo: repo.id}, {token: req.user.token}, {upsert: true}).exec();
                     }
                 }
 

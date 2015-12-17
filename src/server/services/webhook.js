@@ -1,5 +1,8 @@
 'use strict';
 
+// modules
+var async = require('async');
+
 // services
 var url = require('./url');
 var github = require('./github');
@@ -21,63 +24,40 @@ module.exports = {
                 active: true
             },
             token: args.token
-        }, function(err, hook) {
-            var webhook = hook ? hook.id : undefined;
-            Repo.findOne({repo: args.repo_uuid}, function(err, repo) {
-                if(!repo) {
-                    return Repo.create({
-                        repo: args.repo_uuid,
-                        webhook: webhook,
-                        token: args.token
-                    }, done);
-                }
-
-                repo.webhook = webhook;
-                repo.save(done);
-            });
         });
     },
 
-    update: function(args, done) {
+    remove: function(args, done) {
         github.call({
             obj: 'repos',
-            fun: 'updateHook',
+            fun: 'getHooks',
             arg: {
                 user: args.user,
                 repo: args.repo,
-                id: args.webhook,
-                name: 'web',
-                config: {url: url.webhook, content_type: 'json'},
-                events: config.server.github.webhook_events,
-                active: true
+                per_page: 100
             },
             token: args.token
-        }, done);
-    },
-
-    remove: function(args, done) {
-        Repo.findOne({repo: args.repo_uuid}).select('+webhook').exec(function(err, repo) {
-            if(!repo) {
-                return done(err, repo);
+        }, function(err, hooks) {
+            if(err) {
+                return done(err);
             }
 
-            github.call({
-                obj: 'repos',
-                fun: 'deleteHook',
-                arg: {
-                    user: args.user,
-                    repo: args.repo,
-                    id: repo.webhook
-                },
-                token: args.token
-            }, function(err, hook) {
-                if(err) {
-                    return done(err);
+            async.each(hooks, function(hook, callback) {
+                if(hook.config.url !== url.webhook) {
+                    return callback();
                 }
 
-                repo.webhook = null;
-                repo.save(done);
-            });
+                github.call({
+                    obj: 'repos',
+                    fun: 'deleteHook',
+                    arg: {
+                        user: args.user,
+                        repo: args.repo,
+                        id: hook.id
+                    },
+                    token: args.token
+                }, callback);
+            }, done);
         });
     }
 };

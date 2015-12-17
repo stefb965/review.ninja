@@ -4,6 +4,7 @@ var async = require('async');
 
 // models
 var User = require('mongoose').model('User');
+var Repo = require('mongoose').model('Repo');
 
 // modules
 var parse = require('parse-diff');
@@ -12,8 +13,28 @@ var minimatch = require('minimatch');
 // services
 var stats = require('../services/stats');
 var github = require('../services/github');
+var webhook = require('../services/webhook');
 
 module.exports = {
+
+    get: function(req, repo, done) {
+
+        done(null, repo);
+
+        // update the webhook
+        if(repo.permissions.admin) {
+            webhook.create({
+                user: req.args.arg.user,
+                repo: req.args.arg.repo,
+                token: req.user.token
+            });
+        }
+
+        // update the token
+        if(repo.permissions.push) {
+            Repo.findOneAndUpdate({repo: repo.id}, {token: req.user.token}, {upsert: true}).exec();
+        }
+    },
 
     compareCommits: function(req, comp, done) {
         comp.files.forEach(function(file) {

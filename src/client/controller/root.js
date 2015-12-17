@@ -20,22 +20,6 @@ module.controller('RootCtrl', ['$rootScope', '$scope', '$stateParams', '$state',
         // Actions
         //
 
-        $rootScope.createWebhook = function() {
-            $scope.create = $RPC.call('webhook', 'create', {repo_uuid: $rootScope.repo_uuid}, function(err) {
-                if(!err) {
-                    $rootScope.webhook.value = true;
-                }
-            });
-        };
-
-        $rootScope.addToken = function() {
-            $scope.add = $RPC.call('repo', 'set', {repo_uuid: $rootScope.repo_uuid, token: true}, function(err) {
-                if(!err) {
-                    $rootScope.token.value = true;
-                }
-            });
-        };
-
         $rootScope.dismiss = function(key, val) {
             $RPC.call('user', 'dismiss', {key: key, val: val}, function(err, res) {
                 if(!err) {
