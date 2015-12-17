@@ -2,6 +2,7 @@
 
 // models
 var Star = require('mongoose').model('Star');
+var User = require('mongoose').model('User');
 
 // services
 var star = require('../services/star');
@@ -45,7 +46,10 @@ module.exports = function(req, res) {
                     token: token
                 }, function(err, pull) {
                     if(!err) {
-                        star[func](pull.head.sha, user, repo, repo_uuid, number, sender, token);
+                        User.findOne({uuid: sender.id}, function(err, ninja) {
+                            sender.token = ninja && ninja.token ? ninja.token : null;
+                            star[func](pull.head.sha, user, repo, repo_uuid, number, sender, token);
+                        });
                     }
                 });
             }

@@ -2,6 +2,7 @@
 
 // models
 var Star = require('mongoose').model('Star');
+var Repo = require('mongoose').model('Repo');
 
 // services
 var github = require('../services/github');
@@ -13,14 +14,12 @@ var exec = function(type, args, user, done) {
     github.call({
         obj: 'repos',
         fun: 'one',
-        arg: { id: args.repo_uuid },
+        arg: {id: args.repo_uuid},
         token: user.token
     }, function(err, repo) {
-
         if(err) {
             return done(err, repo);
         }
-
         if(!repo.permissions.pull) {
             return done({
                 code: 403,
@@ -28,8 +27,10 @@ var exec = function(type, args, user, done) {
             });
         }
 
-        star[type](args.sha, args.user, args.repo, args.repo_uuid, args.number, user, user.token, done);
-
+        Repo.findOne({repo: repo.id}).select('+token').exec(function(err, repo) {
+            var token = repo && repo.token ? repo.token : user.token;
+            star[type](args.sha, args.user, args.repo, args.repo_uuid, args.number, user, token, done);
+        });
     });
 };
 
