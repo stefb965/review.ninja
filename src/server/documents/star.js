@@ -7,6 +7,7 @@ var StarSchema = mongoose.Schema({
     repo: Number,
     user: Number,
     name: String,
+    reviewer: {type: Boolean, default: true},
     created_at: Date
 });
 

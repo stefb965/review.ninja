@@ -12,6 +12,7 @@ global.io = {emit: function() {}};
 // models
 var User = require('../../../server/documents/user').User;
 var Star = require('../../../server/documents/star').Star;
+var Repo = require('../../../server/documents/repo').Repo;
 var Settings = require('../../../server/documents/settings').Settings;
 
 // services
@@ -132,12 +133,18 @@ describe('star:set', function() {
             done(null, {permissions: {pull: true}});
         });
 
+        var repoStub = sinon.stub(Repo, 'findOne', function(query, done) {
+            assert.equal(query.repo, 1);
+            done(null, {reviewers: null});
+        });
+
         var starStub = sinon.stub(Star, 'create', function(args, done) {
             assert.deepEqual(args, {
                 sha: 'sha',
                 repo: 1,
                 user: 3,
                 name: 'login',
+                reviewer: true,
                 created_at: '4'
             });
 
@@ -203,12 +210,14 @@ describe('star:set', function() {
 
         star.set(req, function(err, res) {
             sinon.assert.called(githubStub);
+            sinon.assert.called(repoStub);
             sinon.assert.called(starStub);
             sinon.assert.called(notificationStub);
             sinon.assert.called(dateStub);
             sinon.assert.called(statusStub);
             sinon.assert.called(emitStub);
             githubStub.restore();
+            repoStub.restore();
             starStub.restore();
             notificationStub.restore();
             dateStub.restore();
