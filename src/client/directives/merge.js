@@ -31,6 +31,20 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
                 });
             }
 
+            scope.teams = $HUB.call('orgs', 'getTeams', {
+                user: $stateParams.user,
+                repo: $stateParams.repo,
+                org: $stateParams.user
+            }, function(err, teams) {
+              if(!err) {
+                  teams.value.forEach(function(team) {
+                    if(team.id.toString() === scope.reposettings.value.reviewers) {
+                        scope.reviewTeam = team.name;
+                    }
+                  });
+              }
+            });
+
             scope.$watch('status', function(status) {
                 var state = status ? status.state : null;
                 if(state) {
@@ -67,15 +81,10 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
                 }
             });
 
-
             scope.getStarText = function() {
                 if(scope.pull.stars && scope.reposettings.value) {
-                    var stars = scope.pull.stars.length;
-                    var threshold = scope.reposettings.value.threshold;
-                    if(stars < threshold) {
-                        return $filter('pluralize')(threshold - stars, 'more ninja star') + ' needed';
-                    }
-                    return $filter('pluralize')(stars, 'ninja star');
+                    return $filter('pluralize')(scope.pull.stars.length,
+                      '(of ' + scope.reposettings.value.threshold + ') ninja star');
                 }
             };
 
