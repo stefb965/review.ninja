@@ -8,6 +8,7 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
         restrict: 'E',
         templateUrl: '/directives/templates/merge.html',
         scope: {
+            repo: '=',
             pull: '=',
             status: '=',
             protection: '=',
@@ -31,19 +32,21 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
                 });
             }
 
-            scope.teams = $HUB.call('orgs', 'getTeams', {
-                user: $stateParams.user,
-                repo: $stateParams.repo,
-                org: $stateParams.user
-            }, function(err, teams) {
-              if(!err) {
-                  teams.value.forEach(function(team) {
-                    if(team.id.toString() === scope.reposettings.value.reviewers) {
-                        scope.reviewTeam = team.name;
-                    }
-                  });
-              }
-            });
+            if(scope.repo.organization) {
+                scope.teams = $HUB.call('orgs', 'getTeams', {
+                    user: $stateParams.user,
+                    repo: $stateParams.repo,
+                    org: $stateParams.user
+                }, function(err, teams) {
+                  if(!err) {
+                      teams.value.forEach(function(team) {
+                        if(team.id.toString() === scope.reposettings.value.reviewers) {
+                            scope.reviewTeam = team.name;
+                        }
+                      });
+                  }
+                });
+            }
 
             scope.$watch('status', function(status) {
                 var state = status ? status.state : null;
