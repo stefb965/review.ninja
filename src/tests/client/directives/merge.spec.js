@@ -46,9 +46,10 @@ describe('Merge Directive', function() {
             },
             stars: [{name: 'gabe'}]
         };
+        scope.repo = {organization: true};
         scope.reposettings = {value: {threshold: 2, reviewers: '2'}};
         scope.status = {statuses: ['closed']};
-        element = $compile('<merge-button permissions="permissions" pull="pull" reposettings="reposettings" status="status"></merge-button>')(scope);
+        element = $compile('<merge-button permissions="permissions" repo="repo" pull="pull" reposettings="reposettings" status="status"></merge-button>')(scope);
         scope.$digest();
         elScope = element.isolateScope();
     }));
@@ -64,7 +65,7 @@ describe('Merge Directive', function() {
         });
         scope.permissions.push = true;
         scope.pull.head.repo.id = 2;
-        element = compile('<merge-button permissions="permissions" pull="pull" reposettings="reposettings" status="status"></merge-button>')(scope);
+        element = compile('<merge-button permissions="permissions" repo="repo" pull="pull" reposettings="reposettings" status="status"></merge-button>')(scope);
         scope.$digest();
         elScope = element.isolateScope();
     });
