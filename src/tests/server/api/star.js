@@ -144,7 +144,7 @@ describe('star:set', function() {
                 repo: 1,
                 user: 3,
                 name: 'login',
-                reviewer: true,
+                reviewer: null,
                 created_at: '4'
             });
 

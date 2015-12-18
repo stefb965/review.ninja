@@ -14,7 +14,13 @@ module.exports = {
 
     status: function(args, done) {
 
-        Star.count({repo: args.repo_uuid, sha: args.sha, reviewer: true}, function(err, stars) {
+        // About the "reviewer" flag:
+        //
+        // null   | if no review team has been specified (default)
+        // true   | if user is on the review team
+        // false  | if user is not on the review team
+
+        Star.count({repo: args.repo_uuid, sha: args.sha, reviewer: {$ne: false}}, function(err, stars) {
 
             stars = stars || 0;
 

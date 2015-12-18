@@ -12,7 +12,7 @@ var notification = require('./notification');
 var getReviewer = function(id, user, token, done) {
 
     if(!id) {
-        return done(true);
+        return done(null);
     }
 
     github.call({
