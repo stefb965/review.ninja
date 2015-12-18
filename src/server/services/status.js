@@ -10,22 +10,15 @@ module.exports = {
 
     update: function(args) {
 
-        Repo.findOneAndUpdate({
-            repo: args.repo_uuid
-        }, {}, {
-            new: true,
-            upsert: true
-        }, function(err, repo) {
+        Repo.findOne({repo: args.repo_uuid}, function(err, repo) {
 
-            repo = repo || {threshold: 1, reviewers: null};
+            repo = repo || {threshold: 1};
 
             pullRequest.status({
                 sha: args.sha,
                 user: args.user,
                 repo: args.repo,
                 number: args.number,
-                threshold: repo.threshold,
-                reviewers: repo.reviewers,
                 repo_uuid: args.repo_uuid,
                 token: args.token
             }, function(err, status) {

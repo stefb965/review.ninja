@@ -14,49 +14,33 @@ module.exports = {
 
     status: function(args, done) {
 
-        Star.find({repo: args.repo_uuid, sha: args.sha}, function(err, stars) {
+        // About the "reviewer" flag:
+        //
+        // null   | if no review team has been specified (default)
+        // true   | if user is on the review team
+        // false  | if user is not on the review team
 
-            stars = stars || [];
+        Star.count({repo: args.repo_uuid, sha: args.sha, reviewer: {$ne: false}}, function(err, stars) {
 
-            async.filter(stars, function(star, call) {
+            stars = stars || 0;
 
-                if(!args.reviewers) {
-                    return call(true);
-                }
+            github.call({
+                obj: 'pullRequests',
+                fun: 'getComments',
+                arg: {
+                    user: args.user,
+                    repo: args.repo,
+                    number: args.number,
+                    per_page: 100
+                },
+                token: args.token
+            }, function(err, comments) {
 
-                github.call({
-                    obj: 'orgs',
-                    fun: 'getTeamMember',
-                    arg: {
-                        id: args.reviewers,
-                        user: star.name
-                    },
-                    token: args.token,
-                    basicAuth: args.basicAuth
-                }, function(err, member) {
-                    call(member ? true : false);
-                });
-            }, function(stars) {
+                comments = comments || [];
 
-                github.call({
-                    obj: 'pullRequests',
-                    fun: 'getComments',
-                    arg: {
-                        user: args.user,
-                        repo: args.repo,
-                        number: args.number,
-                        per_page: 100
-                    },
-                    token: args.token,
-                    basicAuth: args.basicAuth
-                }, function(err, comments) {
-
-                    comments = comments || [];
-
-                    done(null, {
-                        stars: stars.length,
-                        issues: flags.review(comments)
-                    });
+                done(null, {
+                    stars: stars,
+                    issues: flags.review(comments)
                 });
             });
         });
@@ -65,12 +49,9 @@ module.exports = {
 
     badgeComment: function(user, repo, repo_uuid, number) {
 
-        Repo.findOneAndUpdate({
-            repo: repo_uuid
-        }, {}, {
-            new: true,
-            upsert: true
-        }, function(err, settings) {
+        Repo.findOne({repo: repo_uuid}, function(err, settings) {
+
+            settings = settings || {comment: true};
 
             if(!err && settings && settings.comment && config.server.github.user) {
 
