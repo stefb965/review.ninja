@@ -20,6 +20,14 @@ describe('Merge Directive', function() {
 
         });
 
+        httpBackend.when('POST', '/api/github/call', '{"obj":"orgs","fun":"getTeams","arg":' + JSON.stringify({
+           user: 'gabe',
+           repo: 'test',
+           org: 'gabe'
+        }) + '}').respond({
+            data: [ { id:'red' }, { id: 'blue' } ]
+        });
+
         compile = $compile;
 
         scope = $rootScope.$new();
@@ -38,7 +46,7 @@ describe('Merge Directive', function() {
             },
             stars: [{name: 'gabe'}]
         };
-        scope.reposettings = {value: {threshold: 2}};
+        scope.reposettings = {value: {threshold: 2, reviewers: '2'}};
         scope.status = {statuses: ['closed']};
         element = $compile('<merge-button permissions="permissions" pull="pull" reposettings="reposettings" status="status"></merge-button>')(scope);
         scope.$digest();
@@ -67,10 +75,10 @@ describe('Merge Directive', function() {
 
     it('should get star text', function() {
         var result = elScope.getStarText();
-        (result).should.be.exactly('1 more ninja star needed');
+        (result).should.be.exactly('1 (of 2) ninja star');
         elScope.reposettings.value.threshold = 1;
         var result2 = elScope.getStarText();
-        (result2).should.be.exactly('1 ninja star');
+        (result2).should.be.exactly('1 (of 1) ninja star');
     });
 
     it('should delete branch', function() {
