@@ -1,4 +1,5 @@
 <div class="col-sm-3 merge"
+     ng-hide="teams.loading"
      ng-class="{
             'text-success': status.state==='success' && !pull.merged,
             'text-warning': status.state==='pending' && !pull.merged,
@@ -30,10 +31,8 @@
       {{ getStarText() }}
       <span ng-show="reviewTeam"> from {{ reviewTeam }} </span>
     </p>
-    <p>
-      <span ng-show="pull.status.issues.open + pull.status.issues.closed > 0">
-        {{ pull.status.issues.closed }} (of {{ pull.status.issues.open + pull.status.issues.closed }}) problems resolved</span>
-      <a ui-sref="repo.settings()" style="float:right;" ng-show="permissions.push"><i class="fa fa-pencil-square-o"></i></a>
+    <p ng-show="pull.status.issues.open + pull.status.issues.closed > 0">
+      {{ pull.status.issues.closed }} (of {{ pull.status.issues.open + pull.status.issues.closed }}) problems resolved
     </p>
     <small ng-show="!pull.mergeable">
       Pull Request <a ng-href="{{ pull.html_url }}" class="link-external" target="_blank">#{{ pull.number }}</a> can't be merged automatically.
@@ -65,8 +64,12 @@
 
   <div class="text-body" ng-show="pull.merged">
     <p>{{ status.count | pluralize:'status check' }} <strong>{{ status.text }}</strong></p>
-    <p>{{ pull.status.issues.closed | pluralize:'closed issue' }}</p>
-    <p>{{ pull.status.issues.open | pluralize:'open issue' }}</p>
-    <p>{{ getStarText() }} <a ui-sref="repo.settings()" ng-show="permissions.push" style="float:right;"><i class="fa fa-pencil-square-o"></i></a></p>
+    <p>
+      {{ getStarText() }}
+      <span ng-show="reviewTeam"> from {{ reviewTeam }} </span>
+    </p>
+    <p ng-show="pull.status.issues.open + pull.status.issues.closed > 0">
+        {{ pull.status.issues.closed }} (of {{ pull.status.issues.open + pull.status.issues.closed }}) problems resolved
+    </p>
   </div>
 </div>
