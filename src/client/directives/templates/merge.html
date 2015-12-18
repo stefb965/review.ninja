@@ -30,6 +30,9 @@
     <p>
       {{ getStarText() }}
       <span ng-show="reviewTeam"> from {{ reviewTeam }} </span>
+      <a ui-sref="repo.settings()">
+        <i class="fa fa-gear"></i>
+      </a>
     </p>
     <p ng-show="pull.status.issues.open + pull.status.issues.closed > 0">
       {{ pull.status.issues.closed }} (of {{ pull.status.issues.open + pull.status.issues.closed }}) problems resolved
@@ -67,6 +70,9 @@
     <p>
       {{ getStarText() }}
       <span ng-show="reviewTeam"> from {{ reviewTeam }} </span>
+      <a ui-sref="repo.settings()">
+        <i class="fa fa-gear"></i>
+      </a>
     </p>
     <p ng-show="pull.status.issues.open + pull.status.issues.closed > 0">
         {{ pull.status.issues.closed }} (of {{ pull.status.issues.open + pull.status.issues.closed }}) problems resolved

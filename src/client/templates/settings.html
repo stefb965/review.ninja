@@ -15,22 +15,22 @@
     <div class="row">
       <div class="col-md-12" style="margin-top: 10px;" ng-show="repo.value.permissions.admin">
         <p class="settingsheading">Merge threshold</p>
-        <div style="margin-left: 15px;">
-            <input id="threshold" type="number" min="1" max="99"
-                required name="thresholdvalue"
-                ng-model="reposettings.value.threshold"
-                ng-pattern="/[0-9]+/"
-                ng-change="changeThreshold()"
-                ng-class="{'text-warning': form.$invalid}"
-                class="text-right" />
-              ninja star<span ng-show="reposettings.value.threshold > 1">s</span>
-              <span ng-show="teams">from</span>
-              <div class="btn-group" dropdown ng-show="teams"><button type="button"
+        <input id="threshold" type="number" min="1" max="99"
+            required name="thresholdvalue"
+            ng-model="reposettings.value.threshold"
+            ng-pattern="/[0-9]+/"
+            ng-change="changeThreshold()"
+            ng-class="{'text-warning': form.$invalid}"
+            class="text-right" />
+          ninja star<span ng-show="reposettings.value.threshold > 1">s</span>
+          <span ng-show="teams && teams.loaded">
+            from
+            <div class="btn-group" dropdown ng-show="teams">
+              <button type="button"
                       class="btn btn-default dropdown-toggle"
                       data-toggle="dropdown"
                       aria-haspopup="true"
-                      aria-expanded="false"
-                      ng-show="teams && teams.loaded">
+                      aria-expanded="false">
                 {{ reviewTeam || 'Anyone' }} <span class="caret"></span>
               </button>
               <ul class="dropdown-menu">
@@ -39,8 +39,8 @@
                   <a href="#" ng-click="changeReviewerTeam(team)">{{ team.name }}</a>
                 </li>
               </ul>
-            </div> needed to merge.
-          </p>
+            </div> 
+          </span> needed to merge.
         </div>
       </div>
       <div class="col-md-12" style="margin-top: 20px;" ng-show="repo.value.permissions.admin">
