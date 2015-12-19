@@ -130,6 +130,17 @@ module.controller('PullCtrl', [
             });
         };
 
+        $scope.setPref = function(key, val) {
+            $RPC.call('user', 'setPref', {
+                key: key,
+                val: val
+            }, function(err, user) {
+                if(!err) {
+                    $rootScope.user.value.prefs = user.value.prefs;
+                }
+            });
+        };
+
         $scope.addReviewComment = function(comment, ref) {
             if(comment && comment.body) {
 

@@ -20,7 +20,7 @@
       &nbsp; <!-- keep to maintain spacing -->
       <small ng-show="user.meta['x-oauth-scopes'].split(', ').indexOf('repo') === -1">
         You are only showing public repos.
-        <a href="/auth/github?scope=private" target="_self" style="text-decoration: underline;">
+        <a analytics-on="click" analytics-event="Enable Private Repo" analytics-category="Advanced" href="/auth/github?scope=private" target="_self" style="text-decoration: underline;">
           Enable private repos.
         </a>
       </small>
@@ -40,6 +40,7 @@
       </div>
       <div class="list-group" style="max-height:200px; overflow-y:scroll;">
         <a href="" 
+           analytics-on="click" analytics-event="Add repo" analytics-category="Basic" 
            class="list-group-item" 
            ng-class="{ active: active===repo }" 
            ng-click="$parent.active=repo; add(repo);"

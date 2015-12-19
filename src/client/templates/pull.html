@@ -23,10 +23,11 @@
           <merge-button repo="repo"
                         pull="pull"
                         status="status.value"
+                        analytics-event="Merge PR"
+                        analytics-category="Advanced"
                         permissions="repo.permissions"
                         reposettings="reposettings"
                         protection="branch.value.protection"
-                        get-long-star-text="getLongStarText()"
                         ng-show="status.loaded">
           </merge-button>
         </div>
@@ -37,7 +38,24 @@
     <div class="row">
       <div class="col-sm-12">
 
-        <div class="btn-group pull-right" ng-show="repo.permissions.push">
+        <div class="btn-group pull-right" role="group">
+          <button type="button" 
+                  class="btn btn-default" 
+                  ng-class="{active: !user.value.prefs.split}"
+                  ng-click="setPref('split', false);"
+                  analytics-on="click" analytics-event="Unified code view set" analytics-category="Advanced">
+            Unified
+          </button>
+          <button type="button" 
+                  class="btn btn-default" 
+                  ng-class="{active: user.value.prefs.split}"
+                  ng-click="setPref('split', true);"
+                  analytics-on="click" analytics-event="Split code view set" analytics-category="Advanced">
+            Split
+          </button>
+        </div>
+
+        <div class="btn-group pull-right" ng-show="repo.permissions.push" style="margin-right: 10px;">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span ng-show="!pull.assignee">No assignee <span class="caret"></span></span>
             <span ng-show="pull.assignee"><img src="{{ pull.assignee.avatar_url }}" width="18px" /> {{ pull.assignee.login }} <span class="caret"></span></span>
@@ -53,8 +71,9 @@
               </a>
             </li>
             <li>
-              <a href=""
-                 ng-repeat="collaborator in collaborators.value | filter: {login: queryCollaborator}"
+              <a href="" 
+                 ng-repeat="collaborator in collaborators.value | filter: {login: queryCollaborator}" 
+                 analytics-on="click" analytics-event="Assign user to PR" analytics-category="Advanced" 
                  ng-click="assign(collaborator.login)"
                  style="padding: 3px 10px;">
                 <img src="{{ collaborator.avatar_url }}" width="18px" /> &nbsp;{{ collaborator.login }}
@@ -62,6 +81,7 @@
             </li>
           </ul>
         </div>
+
         <i class="fa fa-lg fa-spinner fa-spin pull-right" style="margin: 10px;" ng-show="assigning.loading"></i>
 
         <tabset class="pull-tabs">
@@ -91,7 +111,10 @@
                   <div class="btn-group btn-group-lg">
                     <button type="button"
                             class="btn btn-ninja"
-                            style="padding-right: 12px; padding-left: 12px;"
+                            style="padding-right: 12px; padding-left: 12px;" 
+                            analytics-on="click" 
+                            analytics-event="Add/Remove ninja star"
+                            analytics-category="Basic"
                             ng-click="setStar()"
                             tooltip="{{ pull.star ? 'Remove' : 'Add' }} ninja star"
                             tooltip-placement="bottom"
@@ -130,9 +153,12 @@
 
             <i class="fa fa-2x fa-spinner fa-spin center-block" ng-show="comp.loading"></i>
 
+            <div style="clear: both;"></div>
+
             <diff ng-repeat="file in comp.value.files"
                   file="file"
-                  thread="review.thread">
+                  thread="review.thread"
+                  split="user.value.prefs.split">
             </diff>
 
           </tab>

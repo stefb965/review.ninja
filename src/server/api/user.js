@@ -146,5 +146,23 @@ module.exports = {
             }
             done(err, {history: user ? user.history : null});
         });
+    },
+
+    setPref: function(req, done) {
+        User.findOne({ uuid: req.user.id }, function(err, user) {
+            if(user) {
+                var prefs = {};
+                for(var p in user.prefs) {
+                    prefs[p] = user.prefs[p];
+                }
+
+                prefs[req.args.key] = req.args.val;
+                user.prefs = prefs;
+
+                user.save();
+            }
+
+            done(err, {prefs: user ? user.prefs : null});
+        });
     }
 };

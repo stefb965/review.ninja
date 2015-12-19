@@ -12,6 +12,7 @@ module.exports = {
             }
 
             githubUser.repos = user.repos || [];
+            githubUser.prefs = user.prefs || {};
             githubUser.history = user.history || {};
 
             done(err, githubUser);
