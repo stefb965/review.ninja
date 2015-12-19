@@ -18,10 +18,9 @@ describe('pullRequest:badgeComment', function(done) {
         config.server.github.user = 'githubUser';
         config.server.github.pass = 'githubUserApiKey';
 
-        var repoStub = sinon.stub(Repo, 'findOneAndUpdate', function(query, args, opts, done) {
+        var repoStub = sinon.stub(Repo, 'findOne', function(query, done) {
 
             assert.equal(query.repo, 123);
-            assert.equal(opts.upsert, true);
 
             done(null, {
                 repo: 123,

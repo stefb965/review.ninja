@@ -61,7 +61,8 @@ module.exports = {
             Repo.findOneAndUpdate({
                 repo: req.args.repo_uuid
             }, {
-                threshold: req.args.threshold
+                threshold: req.args.threshold,
+                reviewers: req.args.reviewers
             }, {new: true}, function(err, repo) {
                 done(err, repo);
                 github.call({
@@ -81,7 +82,8 @@ module.exports = {
                                 sha: pull.head.sha,
                                 repo_uuid: req.args.repo_uuid,
                                 number: pull.number,
-                                token: req.user.token
+                                token: req.user.token,
+                                reviewers: req.args.reviewers
                             });
                         });
                     }

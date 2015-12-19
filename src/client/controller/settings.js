@@ -17,9 +17,26 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
 
         $scope.threshold = 1;
         $scope.comment = true;
+        $scope.reviewTeam = null;
 
         $scope.reposettings = $RPC.call('repo', 'get', {
             repo_uuid: repo.value.id
+        }, function(err, settings) {
+            if(!err && repo.value.organization) {
+                $scope.teams = $HUB.call('orgs', 'getTeams', {
+                  user: $stateParams.user,
+                  repo: $stateParams.repo,
+                  org: repo.value.organization.login
+              }, function(err, teams) {
+                if(!err) {
+                    teams.value.forEach(function(team) {
+                      if(team.id.toString() === settings.value.reviewers) {
+                          $scope.reviewTeam = team.name;
+                      }
+                    });
+                }
+              });
+            }
         });
 
         $scope.slack = $RPC.call('repo', 'getSlack', {
@@ -66,7 +83,8 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
                 repo_uuid: repo.value.id,
                 user: $stateParams.user,
                 repo: $stateParams.repo,
-                threshold: $scope.reposettings.value.threshold
+                threshold: $scope.reposettings.value.threshold,
+                reviewers: $scope.reposettings.value.reviewers
             }, function(err, settings) {
                 if(!err) {
                     $scope.reposettings.value.threshold = settings.value.threshold;
@@ -95,6 +113,22 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
                     $scope.reposettings.value.slack = settings.value.slack;
                 }
             });
+        };
+
+        $scope.changeReviewerTeam = function(team) {
+          $RPC.call('repo', 'setThreshold', {
+              repo_uuid: repo.value.id,
+              user: $stateParams.user,
+              repo: $stateParams.repo,
+              threshold: $scope.reposettings.value.threshold,
+              reviewers: team ? team.id : null
+          }, function(err, settings) {
+              if(!err) {
+                  $scope.reposettings.value.threshold = settings.value.threshold;
+                  $scope.reposettings.value.reviewers = team ? team.id : null;
+                  $scope.reviewTeam = team ? team.name : null;
+              }
+          });
         };
 
     }]);

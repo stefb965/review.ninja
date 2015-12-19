@@ -20,15 +20,14 @@
             </p>
             <p ng-bind-html="pull.html"></p>
           </div>
-          <merge-button pull="pull"
-                        status="status.value" 
-                        analytics-on="click" 
+          <merge-button repo="repo"
+                        pull="pull"
+                        status="status.value"
                         analytics-event="Merge PR"
                         analytics-category="Advanced"
                         permissions="repo.permissions"
                         reposettings="reposettings"
                         protection="branch.value.protection"
-                        get-long-star-text="getLongStarText()"
                         ng-show="status.loaded">
           </merge-button>
         </div>
@@ -148,9 +147,6 @@
                       </ul>
                     </div>
                   </div>
-                </div>
-                <div class="col-sm-4 text-right">
-                  <small>{{ getStarText() }} <a ui-sref="repo.settings()" ng-show="repo.permissions.push"><i class="fa fa-pencil-square-o"></i></a></small>
                 </div>
               </div>
             </div>

@@ -14,7 +14,8 @@ var RepoSchema = mongoose.Schema({
         }
     },
     comment: {type: Boolean, default: true},
-    threshold: {type: Number, min: 1, default: 1}
+    threshold: {type: Number, min: 1, default: 1},
+    reviewers: {type: String}
 });
 
 var Repo = mongoose.model('Repo', RepoSchema);
