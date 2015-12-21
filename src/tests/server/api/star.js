@@ -130,12 +130,28 @@ describe('star:set', function() {
                 token: 'token'
             });
 
-            done(null, {permissions: {pull: true}});
+            done(null, {id: 1, permissions: {pull: true}});
         });
 
         var repoStub = sinon.stub(Repo, 'findOne', function(query, done) {
+
+            var repo = {token: 'token', reviewers: null};
             assert.equal(query.repo, 1);
-            done(null, {reviewers: null});
+
+            if(typeof done === 'function') {
+                return done(null, repo);
+            }
+
+            return {
+                select: function(select) {
+                    assert.equal(select, '+token');
+                    return {
+                        exec: function(done) {
+                            done(null, repo);
+                        }
+                    };
+                }
+            };
         });
 
         var starStub = sinon.stub(Star, 'create', function(args, done) {

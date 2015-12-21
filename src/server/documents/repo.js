@@ -7,7 +7,7 @@ var RepoSchema = mongoose.Schema({
     token: {type: String, select: false},
     comment: {type: Boolean, default: true},
     threshold: {type: Number, min: 1, max: 99, default: 1},
-    reviewers: {type: String}
+    reviewers: Number
 });
 
 RepoSchema.index({

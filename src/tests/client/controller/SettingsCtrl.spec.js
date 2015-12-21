@@ -7,25 +7,21 @@ describe('Settings Controller', function() {
     beforeEach(angular.mock.module('app'));
     beforeEach(angular.mock.module('templates'));
 
-    beforeEach(angular.mock.inject(function($injector, $rootScope, $controller) {
+    beforeEach(angular.mock.inject(function($injector, $rootScope, $controller, $stateParams) {
+
+        $stateParams.user = 'user';
+        $stateParams.repo = 'repo';
 
         httpBackend = $injector.get('$httpBackend');
 
         httpBackend.when('GET', '/config').respond({});
 
-        callSlack = function() {
-            httpBackend.expect('POST', '/api/repo/getSlack').respond({
-                events: {merge: true},
-                token: true,
-                channel: '#bottesting'
-            });
-        };
-
         scope = $rootScope.$new();
 
         repo = {
             value: {
-                id: 1234
+                id: 1234,
+                organization: {login: 'login'}
             }
         };
         createCtrl = function() {
@@ -43,33 +39,29 @@ describe('Settings Controller', function() {
         httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('should get settings', function() {
-        var ctrl = createCtrl();
-
-        httpBackend.expect('POST', '/api/settings/get').respond({
-            settings: 'settings'
-        });
-        httpBackend.expect('POST', '/api/repo/get').respond({
-            repo: 'repo'
-        });
-        callSlack();
-
-        httpBackend.flush();
-        (ctrl.scope.settings.value.settings).should.be.exactly('settings');
-        (ctrl.scope.reposettings.value.repo).should.be.exactly('repo');
-    });
-
     it('should add watched', function() {
         var ctrl = createCtrl();
 
         httpBackend.expect('POST', '/api/settings/get').respond({
-                settings: 'settings',
-                watched: ['one', 'two']
+            settings: 'settings',
+            watched: ['one', 'two']
         });
         httpBackend.expect('POST', '/api/repo/get').respond({
-            repo: 'repo'
+            repo: 1234
         });
-        callSlack();
+        httpBackend.expect('POST', '/api/slack/get').respond({
+            repo: 1234,
+            events: {merge: true},
+            token: true,
+            channel: '#bottesting'
+        });
+        httpBackend.expect('POST', '/api/github/call', '{"obj":"orgs","fun":"getTeams","arg":{"user":"user","repo":"repo","org":"login"}}').respond([
+            {
+                id: 1,
+                name: 'reviewTeam'
+            }
+        ]);
+        httpBackend.expect('POST', '/api/slack/token').respond(false);
 
         httpBackend.flush();
 
@@ -78,20 +70,32 @@ describe('Settings Controller', function() {
         httpBackend.expect('POST', '/api/settings/setWatched').respond(ctrl.scope.settings.value);
         httpBackend.flush();
         (scope.settings.value.watched.length).should.be.exactly(3);
-        (ctrl.scope.reposettings.value.repo).should.be.exactly('repo');
+        (ctrl.scope.repoSettings.value.repo).should.be.exactly(1234);
     });
 
     it('should remove watched', function() {
         var ctrl = createCtrl();
 
         httpBackend.expect('POST', '/api/settings/get').respond({
-                settings: 'settings',
-                watched: ['one', 'two']
+            repo: 1234,
+            watched: ['one', 'two']
         });
         httpBackend.expect('POST', '/api/repo/get').respond({
-            repo: 'repo'
+            repo: 1234
         });
-        callSlack();
+        httpBackend.expect('POST', '/api/slack/get').respond({
+            repo: 1234,
+            events: {merge: true},
+            token: true,
+            channel: '#bottesting'
+        });
+        httpBackend.expect('POST', '/api/github/call', '{"obj":"orgs","fun":"getTeams","arg":{"user":"user","repo":"repo","org":"login"}}').respond([
+            {
+                id: 1,
+                name: 'reviewTeam'
+            }
+        ]);
+        httpBackend.expect('POST', '/api/slack/token').respond(false);
 
         httpBackend.flush();
 
@@ -101,7 +105,7 @@ describe('Settings Controller', function() {
         httpBackend.flush();
 
         (ctrl.scope.settings.value.watched.length).should.be.exactly(1);
-        (ctrl.scope.reposettings.value.repo).should.be.exactly('repo');
+        (ctrl.scope.repoSettings.value.repo).should.be.exactly(1234);
     });
 
     it('should set Notifications', function() {
@@ -109,15 +113,27 @@ describe('Settings Controller', function() {
         var ctrl = createCtrl();
 
         httpBackend.expect('POST', '/api/settings/get').respond({
-                settings: 'settings',
-                watched: ['one', 'two'],
-                notifications: ['yo wassup']
+            repo: 1234,
+            watched: ['one', 'two'],
+            notifications: ['yo wassup']
 
         });
         httpBackend.expect('POST', '/api/repo/get').respond({
-            repo: 'repo'
+            repo: 1234
         });
-        callSlack();
+        httpBackend.expect('POST', '/api/slack/get').respond({
+            repo: 1234,
+            events: {merge: true},
+            token: true,
+            channel: '#bottesting'
+        });
+        httpBackend.expect('POST', '/api/github/call', '{"obj":"orgs","fun":"getTeams","arg":{"user":"user","repo":"repo","org":"login"}}').respond([
+            {
+                id: 1,
+                name: 'reviewTeam'
+            }
+        ]);
+        httpBackend.expect('POST', '/api/slack/token').respond(false);
 
         httpBackend.flush();
 
@@ -127,68 +143,133 @@ describe('Settings Controller', function() {
         httpBackend.flush();
 
         (ctrl.scope.settings.value.notifications.length).should.be.exactly(1);
-        (ctrl.scope.reposettings.value.repo).should.be.exactly('repo');
+        (ctrl.scope.repoSettings.value.repo).should.be.exactly(1234);
 
     });
 
     it('should change threshold', function() {
-        httpBackend.expect('POST', '/api/settings/get').respond({
-                settings: 'settings',
-                watched: ['one', 'two'],
-                notifications: ['yo wassup']
-
-        });
-        httpBackend.expect('POST', '/api/repo/get').respond({
-            repo: 'repo'
-        });
-        callSlack();
 
         var ctrl = createCtrl();
-        ctrl.scope.reposettings = {
-            value: {
-                threshold: 2
-            }
-        };
-        httpBackend.expect('POST', '/api/repo/setThreshold', JSON.stringify({
-            repo_uuid: 1234,
-            threshold: 2
-        })).respond({
-            value: {
-                comment: 'test'
-            }
+
+        httpBackend.expect('POST', '/api/settings/get').respond({
+            repo: 1234,
+            watched: ['one', 'two'],
+            notifications: ['yo wassup']
         });
-        ctrl.scope.changeThreshold();
+        httpBackend.expect('POST', '/api/repo/get').respond({
+            repo: 1234
+        });
+        httpBackend.expect('POST', '/api/slack/get').respond({
+            repo: 1234,
+            events: {merge: true},
+            token: true,
+            channel: '#bottesting'
+        });
+        httpBackend.expect('POST', '/api/github/call', '{"obj":"orgs","fun":"getTeams","arg":{"user":"user","repo":"repo","org":"login"}}').respond([
+            {
+                id: 1,
+                name: 'reviewTeam'
+            }
+        ]);
+        httpBackend.expect('POST', '/api/slack/token').respond(false);
+
         httpBackend.flush();
+
+        httpBackend.expect('POST', '/api/repo/set', JSON.stringify({threshold: 2, repo_uuid: 1234})).respond({
+            repo: 1234,
+            threshold: 2
+        });
+
+        ctrl.scope.setRepo({threshold: 2});
+        httpBackend.flush();
+
+        (ctrl.scope.repoSettings.value.repo).should.be.exactly(1234);
+        (ctrl.scope.repoSettings.value.threshold).should.be.exactly(2);
     });
 
     it('should toggle comments', function() {
-        httpBackend.expect('POST', '/api/settings/get').respond({
-                settings: 'settings',
-                watched: ['one', 'two'],
-                notifications: ['yo wassup']
-
-        });
-        httpBackend.expect('POST', '/api/repo/get').respond({
-            repo: 'repo'
-        });
-        callSlack();
 
         var ctrl = createCtrl();
-        ctrl.scope.reposettings = {
-            value: {
-                comment: 'thing'
-            }
-        };
-        httpBackend.expect('POST', '/api/repo/setComment', JSON.stringify({
-            repo_uuid: 1234,
-            comment: 'thing'
-        })).respond({
-            value: {
-                comment: 'test'
-            }
+
+        httpBackend.expect('POST', '/api/settings/get').respond({
+            repo: 1234,
+            watched: ['one', 'two'],
+            notifications: ['yo wassup']
         });
-        ctrl.scope.toggleComments();
+        httpBackend.expect('POST', '/api/repo/get').respond({
+            repo: 1234
+        });
+        httpBackend.expect('POST', '/api/slack/get').respond({
+            repo: 1234,
+            events: {merge: true},
+            token: true,
+            channel: '#bottesting'
+        });
+        httpBackend.expect('POST', '/api/github/call', '{"obj":"orgs","fun":"getTeams","arg":{"user":"user","repo":"repo","org":"login"}}').respond([
+            {
+                id: 1,
+                name: 'reviewTeam'
+            }
+        ]);
+        httpBackend.expect('POST', '/api/slack/token').respond(false);
+
         httpBackend.flush();
+
+        httpBackend.expect('POST', '/api/repo/set', JSON.stringify({comment: true, repo_uuid: 1234})).respond({
+            repo: 1234,
+            comment: true
+        });
+
+        ctrl.scope.setRepo({comment: true});
+        httpBackend.flush();
+
+        (ctrl.scope.repoSettings.value.repo).should.be.exactly(1234);
+        (ctrl.scope.repoSettings.value.comment).should.be.true;
+    });
+
+    it('should set a review team', function() {
+
+        var ctrl = createCtrl();
+
+        httpBackend.expect('POST', '/api/settings/get').respond({
+            repo: 1234,
+            watched: ['one', 'two'],
+            notifications: ['yo wassup'],
+            reviewers: null
+        });
+        httpBackend.expect('POST', '/api/repo/get').respond({
+            repo: 1234
+        });
+        httpBackend.expect('POST', '/api/slack/get').respond({
+            repo: 1234,
+            events: {merge: true},
+            token: true,
+            channel: '#bottesting'
+        });
+        httpBackend.expect('POST', '/api/github/call', '{"obj":"orgs","fun":"getTeams","arg":{"user":"user","repo":"repo","org":"login"}}').respond({
+            data: [
+                {
+                    id: 1,
+                    name: 'reviewTeam'
+                }
+            ]
+        });
+        httpBackend.expect('POST', '/api/slack/token').respond(false);
+
+        httpBackend.flush();
+
+        httpBackend.expect('POST', '/api/repo/set', JSON.stringify({reviewers: 1, repo_uuid: 1234})).respond({
+            repo: 1234,
+            reviewers: 1
+        });
+
+        ctrl.scope.setRepo({reviewers: 1});
+        httpBackend.flush();
+
+        (ctrl.scope.repoSettings.value.repo).should.be.exactly(1234);
+        (ctrl.scope.repoSettings.value.reviewers).should.be.exactly(1);
+        (ctrl.scope.reviewTeam.id).should.be.exactly(1);
+        (ctrl.scope.reviewTeam.name).should.be.exactly('reviewTeam');
     });
 
 });

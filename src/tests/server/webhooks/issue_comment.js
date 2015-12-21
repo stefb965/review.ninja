@@ -11,12 +11,12 @@ global.io = {emit: function() {}};
 
 // documents
 var User = require('../../../server/documents/user').User;
-var star = require('../../../server/services/star');
+var Repo = require('../../../server/documents/repo').Repo;
 // webhooks
 var issue_comment = require('../../../server/webhooks/issue_comment');
-
 // services
 var url = require('../../../server/services/url');
+var star = require('../../../server/services/star');
 var github = require('../../../server/services/github');
 
 describe('issue_comment', function(done) {
@@ -25,13 +25,6 @@ describe('issue_comment', function(done) {
             params: {id: 123456},
             args: require('../../fixtures/webhooks/issue_comment/created.json')
         };
-
-        var userStub = sinon.stub(User, 'findOne', function(args, done) {
-            assert.equal(args._id, 123456);
-            done(null, {
-                token: 'token'
-            });
-        });
 
         var githubStub = sinon.stub(github, 'call', function(args, done) {
             assert.equal('pullRequests', args.obj);
@@ -46,6 +39,16 @@ describe('issue_comment', function(done) {
             });
         });
 
+        var userStub = sinon.stub(User, 'findOne', function(query, done) {
+            assert.equal(query.uuid, 1387834);
+            done(null, {uuid: 1387834, token: 'token'});
+        });
+
+        var repoStub = sinon.stub(Repo, 'findOne', function(query, done) {
+            assert.equal(query.repo, 23588185);
+            done(null, {id: 23588185, reviewers: null});
+        });
+
         var starStub = sinon.spy(star, 'create');
 
         var ioStub = sinon.stub(io, 'emit', function(event, id) {
@@ -56,8 +59,9 @@ describe('issue_comment', function(done) {
         issue_comment(req, {
             end: function() {
                 sinon.assert.called(starStub);
-                userStub.restore();
                 githubStub.restore();
+                userStub.restore();
+                repoStub.restore();
                 ioStub.restore();
                 done();
             }
@@ -72,13 +76,6 @@ describe('issue_comment', function(done) {
 
         req.args.comment.body = ':-1:';
 
-        var userStub = sinon.stub(User, 'findOne', function(args, done) {
-            assert.equal(args._id, 123456);
-            done(null, {
-                token: 'token'
-            });
-        });
-
         var githubStub = sinon.stub(github, 'call', function(args, done) {
             assert.equal('pullRequests', args.obj);
             assert.equal('get', args.fun);
@@ -92,6 +89,16 @@ describe('issue_comment', function(done) {
             });
         });
 
+        var userStub = sinon.stub(User, 'findOne', function(query, done) {
+            assert.equal(query.uuid, 1387834);
+            done(null, {uuid: 1387834, token: 'token'});
+        });
+
+        var repoStub = sinon.stub(Repo, 'findOne', function(query, done) {
+            assert.equal(query.repo, 23588185);
+            done(null, {id: 23588185, reviewers: null});
+        });
+
         var starStub = sinon.spy(star, 'remove');
 
         var ioStub = sinon.stub(io, 'emit', function(event, id) {
@@ -102,8 +109,9 @@ describe('issue_comment', function(done) {
         issue_comment(req, {
             end: function() {
                 sinon.assert.called(starStub);
-                userStub.restore();
                 githubStub.restore();
+                userStub.restore();
+                repoStub.restore();
                 ioStub.restore();
                 done();
             }

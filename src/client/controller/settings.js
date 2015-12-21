@@ -47,10 +47,10 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
         //
 
         $scope.$watch('teams.value + repoSettings.value.reviewers', function() {
-            if($scope.teams.value && $scope.repoSettings.value) {
+            if($scope.teams && $scope.teams.value && $scope.repoSettings.value) {
                 $scope.reviewTeam = null;
                 $scope.teams.value.forEach(function(team) {
-                    if(team.id.toString() === $scope.repoSettings.value.reviewers) {
+                    if(team.id === $scope.repoSettings.value.reviewers) {
                         $scope.reviewTeam = team;
                     }
                 });

@@ -60,20 +60,6 @@ describe('Root Controller', function() {
     // get user and repo params
     // should change to error on statechangeerror
 
-    it('should send call to create webhook', function() {
-        httpBackend.expect('POST', '/api/webhook/create', JSON.stringify({
-            user: 'gabe',
-            repo: 1234
-        })).respond({
-            value: 1
-        });
-        var ctrl = createCtrl();
-        scope.createWebhook();
-        httpBackend.flush();
-        (scope.hook).should.be.eql({loaded: true, loading: false, error: null, affix: {value: 1}, value: {value: 1}});
-        (scope.created).should.be.true;
-    });
-
     it('should send call to dismiss from history', function() {
         httpBackend.expect('POST', '/api/user/dismiss', JSON.stringify({
             key: 'create'

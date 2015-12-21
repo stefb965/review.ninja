@@ -142,15 +142,14 @@ describe('Home Controller', function() {
         httpBackend.expect('POST', '/api/github/call').respond({value: true});
         var HomeCtrl = createCtrl();
         httpBackend.flush();
-        var fakeRepo = {name: 'test', owner: {login: 'gabe'}};
+        var fakeRepo = {id: 1};
         httpBackend.expect('POST', '/api/webhook/remove', {
-            user: 'gabe',
-            repo: 'test'
+            repo_uuid: 1
         }).respond({
             data: true
         });
         var removeStub = sinon.stub(scope, 'remove', function(repo) {
-            (repo).should.be.eql({name: 'test', owner: {login: 'gabe'}});
+            (repo).should.be.eql({id: 1});
         });
         scope.removeWebhook(fakeRepo);
         httpBackend.flush();
