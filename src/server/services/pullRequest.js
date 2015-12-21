@@ -1,5 +1,7 @@
 'use strict';
 
+var async = require('async');
+
 var url = require('./url');
 var flags = require('./flags');
 var github = require('./github');
@@ -12,7 +14,13 @@ module.exports = {
 
     status: function(args, done) {
 
-        Star.count({repo: args.repo_uuid, sha: args.sha}, function(err, stars) {
+        // About the "reviewer" flag:
+        //
+        // null   | if no review team has been specified (default)
+        // true   | if user is on the review team
+        // false  | if user is not on the review team
+
+        Star.count({repo: args.repo_uuid, sha: args.sha, reviewer: {$ne: false}}, function(err, stars) {
 
             stars = stars || 0;
 
@@ -25,8 +33,7 @@ module.exports = {
                     number: args.number,
                     per_page: 100
                 },
-                token: args.token,
-                basicAuth: args.basicAuth
+                token: args.token
             }, function(err, comments) {
 
                 comments = comments || [];
@@ -42,12 +49,9 @@ module.exports = {
 
     badgeComment: function(user, repo, repo_uuid, number) {
 
-        Repo.findOneAndUpdate({
-            repo: repo_uuid
-        }, {}, {
-            new: true,
-            upsert: true
-        }, function(err, settings) {
+        Repo.findOne({repo: repo_uuid}, function(err, settings) {
+
+            settings = settings || {comment: true};
 
             if(!err && settings && settings.comment && config.server.github.user) {
 

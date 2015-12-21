@@ -8,6 +8,7 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
         restrict: 'E',
         templateUrl: '/directives/templates/merge.html',
         scope: {
+            repo: '=',
             pull: '=',
             status: '=',
             protection: '=',
@@ -28,6 +29,22 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
                     repo: $stateParams.repo,
                     branch: scope.pull.head.ref,
                     headers: {'Accept': 'application/vnd.github.loki-preview+json'}
+                });
+            }
+
+            if(scope.repo.organization) {
+                scope.teams = $HUB.call('orgs', 'getTeams', {
+                    user: $stateParams.user,
+                    repo: $stateParams.repo,
+                    org: $stateParams.user
+                }, function(err, teams) {
+                  if(!err) {
+                      teams.value.forEach(function(team) {
+                        if(team.id.toString() === scope.reposettings.value.reviewers) {
+                            scope.reviewTeam = team.name;
+                        }
+                      });
+                  }
                 });
             }
 
@@ -67,15 +84,10 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
                 }
             });
 
-
             scope.getStarText = function() {
                 if(scope.pull.stars && scope.reposettings.value) {
-                    var stars = scope.pull.stars.length;
-                    var threshold = scope.reposettings.value.threshold;
-                    if(stars < threshold) {
-                        return $filter('pluralize')(threshold - stars, 'more ninja star') + ' needed';
-                    }
-                    return $filter('pluralize')(stars, 'ninja star');
+                    return $filter('pluralize')(scope.pull.stars.length,
+                      '(of ' + scope.reposettings.value.threshold + ') ninja star');
                 }
             };
 

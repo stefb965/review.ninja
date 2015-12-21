@@ -12,6 +12,10 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
 
         $scope.repo = repo;
 
+        $scope.threshold = 1;
+        $scope.comment = true;
+        $scope.reviewTeam = null;
+
         $scope.settings = $RPC.call('settings', 'get', {
             repo_uuid: repo.value.id
         });
@@ -26,6 +30,29 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
             if(!err) {
                 slack.value.token = $RPC.call('slack', 'token', {
                     repo_uuid: repo.value.id
+                });
+            }
+        });
+
+        if(repo.value.organization) {
+            $scope.teams = $HUB.call('orgs', 'getTeams', {
+              user: $stateParams.user,
+              repo: $stateParams.repo,
+              org: repo.value.organization.login
+          });
+        }
+
+        //
+        // Watches
+        //
+
+        $scope.$watch('teams.value + repoSettings.value.reviewers', function() {
+            if($scope.teams.value && $scope.repoSettings.value) {
+                $scope.reviewTeam = null;
+                $scope.teams.value.forEach(function(team) {
+                    if(team.id.toString() === $scope.repoSettings.value.reviewers) {
+                        $scope.reviewTeam = team;
+                    }
                 });
             }
         });

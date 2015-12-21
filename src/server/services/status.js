@@ -10,12 +10,7 @@ module.exports = {
 
     update: function(args) {
 
-        Repo.findOneAndUpdate({
-            repo: args.repo_uuid
-        }, {}, {
-            new: true,
-            upsert: true
-        }, function(err, repo) {
+        Repo.findOne({repo: args.repo_uuid}, function(err, repo) {
 
             repo = repo || {threshold: 1};
 
