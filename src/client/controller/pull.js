@@ -206,36 +206,6 @@ module.controller('PullCtrl', [
 
 
         //
-        // Watches
-        //
-
-        // $scope.$watch('reference.selection', function(newSelection, oldSelection) {
-        //     if(newSelection.ref && !oldSelection.ref && !$scope.show) {
-        //         $scope.highlight = true;
-        //         $timeout(function() {
-        //             $scope.highlight = false;
-        //         }, 1000);
-        //     }
-        // });
-
-
-        //
-        // UI text
-        //
-
-        // get star text
-        $scope.getStarText = function() {
-            if($scope.pull.stars && $scope.reposettings.value) {
-                var stars = $scope.pull.stars.length;
-                var threshold = $scope.reposettings.value.threshold;
-                if(stars < threshold) {
-                    return 'Pull Request needs ' + $filter('pluralize')(threshold - stars, 'more ninja star');
-                }
-                return 'No more ninja stars needed';
-            }
-        };
-
-        //
         // Modals
         //
 

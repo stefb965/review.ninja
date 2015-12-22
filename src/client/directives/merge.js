@@ -110,6 +110,10 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
             // Helper funtion
             //
 
+            scope.reviewers = function(star) {
+                return star.reviewer !== false;
+            };
+
             scope.confirm = function() {
                 scope.showConfirmation = true;
                 $timeout(function() {
