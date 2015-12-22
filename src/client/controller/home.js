@@ -80,7 +80,8 @@ module.controller('HomeCtrl', ['$rootScope', '$scope', '$state', '$stateParams',
 
         $scope.removeWebhook = function(repo) {
             $scope.webhook = $RPC.call('webhook', 'remove', {
-                repo_uuid: repo.id
+                user: repo.owner.login,
+                repo: repo.name
             }, function(err) {
                 if(!err) {
                     $scope.remove(repo);
