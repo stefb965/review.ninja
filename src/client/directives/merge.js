@@ -40,8 +40,8 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
                 }, function(err, teams) {
                   if(!err) {
                       teams.value.forEach(function(team) {
-                        if(team.id.toString() === scope.reposettings.value.reviewers) {
-                            scope.reviewTeam = team.name;
+                        if(team.id === scope.reposettings.value.reviewers) {
+                            scope.reviewTeam = team;
                         }
                       });
                   }
@@ -83,13 +83,6 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
                     });
                 }
             });
-
-            scope.getStarText = function() {
-                if(scope.pull.stars && scope.reposettings.value) {
-                    return $filter('pluralize')(scope.pull.stars.length,
-                      '(of ' + scope.reposettings.value.threshold + ') ninja star');
-                }
-            };
 
             scope.deleteBranch = function() {
                 scope.showConfirmation = false;
