@@ -10,7 +10,7 @@ module.exports = function(req, res, next) {
         return next();
     }
 
-    Repo.findOne({repo: req.args.repository.id}, function(err, repo) {
+    Repo.findOne({repo: req.args.repository.id}).select('+token').exec(function(err, repo) {
         req.args.token = repo ? repo.token : null;
         next();
     });
