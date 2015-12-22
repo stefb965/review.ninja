@@ -13,6 +13,13 @@ var SettingsSchema = mongoose.Schema({
     watched: [String]
 });
 
+SettingsSchema.index({
+    user: 1,
+    repo: 1
+}, {
+    unique: true
+});
+
 var Settings = mongoose.model('Settings', SettingsSchema);
 
 module.exports = {

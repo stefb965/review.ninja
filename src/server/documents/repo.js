@@ -4,19 +4,18 @@ var mongoose = require('mongoose');
 
 var RepoSchema = mongoose.Schema({
     repo: Number,
-    slack: {
-        token: {type: String, select: false},
-        channel: String,
-        events: {
-            pull_request: {type: Boolean, default: true},
-            star: {type: Boolean, default: true},
-            merge: {type: Boolean, default: true}
-        }
-    },
+    token: {type: String, select: false},
     comment: {type: Boolean, default: true},
-    threshold: {type: Number, min: 1, default: 1},
-    reviewers: {type: String}
+    threshold: {type: Number, min: 1, max: 99, default: 1},
+    reviewers: Number
 });
+
+RepoSchema.index({
+    repo: 1
+}, {
+    unique: true
+});
+
 
 var Repo = mongoose.model('Repo', RepoSchema);
 

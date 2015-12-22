@@ -2,6 +2,7 @@
 // unit test
 var assert = require('assert');
 var sinon = require('sinon');
+var merge = require('merge');
 
 // config
 global.config = require('../../../config');
@@ -23,45 +24,12 @@ var notification = require('../../../server/services/notification');
 var status = require('../../../server/services/status');
 var pullRequest = require('../../../server/services/pullRequest');
 
-describe('pull_request', function(done) {
-    it('should exit silently if user not found', function(done) {
-        var req = {
-            params: {id: 123456},
-            args: require('../../fixtures/webhooks/pull_request/closed.json')
-        };
-
-        var userStub = sinon.stub(User, 'findOne', function(args, done) {
-            assert.equal(args._id, 123456);
-            done(null, null);
-        });
-
-        pull_request(req, {
-            status: function(code) {
-                assert.equal(code, 404);
-                return this;
-            },
-            send: function(msg) {
-                assert.equal(msg, 'User not found');
-                userStub.restore();
-                done();
-            }
-        });
-    });
-});
-
 describe('pull_request:opened', function() {
     it('should update the status, send a notification, and create a PR comment', function(done) {
         var req = {
             params: {id: 123456},
-            args: require('../../fixtures/webhooks/pull_request/opened.json')
+            args: merge({token: 'token'}, require('../../fixtures/webhooks/pull_request/opened.json'))
         };
-
-        var userStub = sinon.stub(User, 'findOne', function(args, done) {
-            assert.equal(args._id, 123456);
-            done(null, {
-                token: 'token'
-            });
-        });
 
         var statusStub = sinon.stub(status, 'update', function(args) {
             assert.deepEqual(args, {
@@ -100,7 +68,6 @@ describe('pull_request:opened', function() {
 
         pull_request(req, {
             end: function() {
-                userStub.restore();
                 statusStub.restore();
                 notificationStub.restore();
                 badgeCommentStub.restore();
@@ -114,15 +81,8 @@ describe('pull_request:synchronize', function() {
     it('should update the status, send a notification, and emit a websocket', function(done) {
         var req = {
             params: {id: 123456},
-            args: require('../../fixtures/webhooks/pull_request/synchronize.json')
+            args: merge({token: 'token'}, require('../../fixtures/webhooks/pull_request/synchronize.json'))
         };
-
-        var userStub = sinon.stub(User, 'findOne', function(args, done) {
-            assert.equal(args._id, 123456);
-            done(null, {
-                token: 'token'
-            });
-        });
 
         var statusStub = sinon.stub(status, 'update', function(args) {
             assert.deepEqual(args, {
@@ -158,7 +118,6 @@ describe('pull_request:synchronize', function() {
 
         pull_request(req, {
             end: function() {
-                userStub.restore();
                 statusStub.restore();
                 notificationStub.restore();
                 emitStub.restore();
@@ -172,15 +131,8 @@ describe('pull_request:closed', function() {
     it('should emit "merged" to sockets', function(done) {
         var req = {
             params: {id: 123456},
-            args: require('../../fixtures/webhooks/pull_request/closed.json')
+            args: merge({token: 'token'}, require('../../fixtures/webhooks/pull_request/closed.json'))
         };
-
-        var userStub = sinon.stub(User, 'findOne', function(args, done) {
-            assert.equal(args._id, 123456);
-            done(null, {
-                token: 'token'
-            });
-        });
 
         var emitStub = sinon.stub(io, 'emit', function(channel, arg) {
             assert.equal(channel, 'reviewninja:foo:pull-request-42:merged');
@@ -189,7 +141,6 @@ describe('pull_request:closed', function() {
 
         pull_request(req, {
             end: function() {
-                userStub.restore();
                 emitStub.restore();
                 done();
             }
