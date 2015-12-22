@@ -49,6 +49,7 @@ module.controller('HomeCtrl', ['$rootScope', '$scope', '$state', '$stateParams',
                 if(!err) {
                     repo.adddate = -new Date();
                     $scope.repos.push(repo);
+                    $rootScope.user.value.repos.push(repo.id);
 
                     $scope.search = '';
                     $scope.show = false;
@@ -65,14 +66,16 @@ module.controller('HomeCtrl', ['$rootScope', '$scope', '$state', '$stateParams',
         };
 
         $scope.remove = function(repo) {
-            var index = $scope.repos.indexOf(repo);
+            var i = $scope.repos.indexOf(repo);
+            var j = $rootScope.user.value.repos.indexOf(repo.id);
             $RPC.call('user', 'rmvRepo', {
                 user: repo.owner.login,
                 repo: repo.name,
                 repo_uuid: repo.id
             }, function(err) {
                 if(!err) {
-                    $scope.repos.splice(index, 1);
+                    $scope.repos.splice(i, 1);
+                    $rootScope.user.value.repos.splice(j, 1);
                     $scope.active = null;
                 }
             });

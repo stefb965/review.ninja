@@ -45,7 +45,7 @@
            ng-class="{ active: active===repo }" 
            ng-click="$parent.active=repo; add(repo);"
            ng-hide="contains(repo.id)"
-           ng-repeat="repo in allRepos.value | filter:{'full_name': search} | orderBy: 'full_name'">
+           ng-repeat="repo in allRepos.value | deep:'permissions.push' | filter:{'full_name': search} | orderBy: 'full_name'">
           {{ repo.owner.login }} / {{ repo.name }}
           <span class="octicon octicon-lock text-warning pull-right" ng-show="active!==repo && repo.private" style="padding-top:2px;"></span>
           <i class="fa fa-lg fa-spinner fa-spin pull-right" ng-show="active===repo" style="padding-top:3px;"></i>

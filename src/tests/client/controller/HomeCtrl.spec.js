@@ -26,6 +26,7 @@ describe('Home Controller', function() {
 
         scope = $rootScope.$new();
         rootScope = $rootScope;
+        rootScope.user = {value: {repos: []}};
 
         // create promise for user
         var deferred = $q.defer();
