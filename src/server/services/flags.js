@@ -42,7 +42,7 @@ module.exports = {
             closed = state === 'closed' ? closed + 1 : closed;
         }
 
-        return {open: open, closed: closed};
+        return {open: open, closed: closed, total: open + closed};
     },
 
     star: function(comment) {

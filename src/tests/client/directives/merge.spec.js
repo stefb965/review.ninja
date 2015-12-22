@@ -74,14 +74,6 @@ describe('Merge Directive', function() {
 
     });
 
-    it('should get star text', function() {
-        var result = elScope.getStarText();
-        (result).should.be.exactly('1 (of 2) ninja star');
-        elScope.reposettings.value.threshold = 1;
-        var result2 = elScope.getStarText();
-        (result2).should.be.exactly('1 (of 1) ninja star');
-    });
-
     it('should delete branch', function() {
         httpBackend.expect('POST', '/api/github/call', '{"obj":"gitdata","fun":"deleteReference","arg":' + JSON.stringify({
            user: 'gabe',

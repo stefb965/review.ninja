@@ -28,11 +28,8 @@
   <div class="text-body" ng-show="!pull.merged">
     <p>{{ status.count | pluralize:'status check' }} <strong>{{ status.text }}</strong></p>
     <p>
-      {{ getStarText() }}
-      <span ng-show="reviewTeam"> from {{ reviewTeam }} </span>
-      <a ui-sref="repo.settings()">
-        <i class="fa fa-gear"></i>
-      </a>
+      {{ pull.stars.length }} (of {{ reposettings.value.threshold }}) ninja stars <span ng-show="reviewTeam">from {{ reviewTeam.name }}</span>
+      <a ui-sref="repo.settings()"><i class="fa fa-gear"></i></a>
     </p>
     <p ng-show="pull.status.issues.open + pull.status.issues.closed > 0">
       {{ pull.status.issues.closed }} (of {{ pull.status.issues.open + pull.status.issues.closed }}) problems resolved
@@ -68,11 +65,8 @@
   <div class="text-body" ng-show="pull.merged">
     <p>{{ status.count | pluralize:'status check' }} <strong>{{ status.text }}</strong></p>
     <p>
-      {{ getStarText() }}
-      <span ng-show="reviewTeam"> from {{ reviewTeam }} </span>
-      <a ui-sref="repo.settings()">
-        <i class="fa fa-gear"></i>
-      </a>
+      {{ pull.stars.length }} (of {{ reposettings.value.threshold }}) ninja stars <span ng-show="reviewTeam">from {{ reviewTeam.name }}</span>
+      <a ui-sref="repo.settings()"><i class="fa fa-gear"></i></a>
     </p>
     <p ng-show="pull.status.issues.open + pull.status.issues.closed > 0">
         {{ pull.status.issues.closed }} (of {{ pull.status.issues.open + pull.status.issues.closed }}) problems resolved
