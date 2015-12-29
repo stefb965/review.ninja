@@ -12,6 +12,7 @@ global.io = {emit: function() {}};
 // models
 var User = require('../../../server/documents/user').User;
 var Star = require('../../../server/documents/star').Star;
+var Repo = require('../../../server/documents/repo').Repo;
 var Settings = require('../../../server/documents/settings').Settings;
 
 // services
@@ -129,7 +130,28 @@ describe('star:set', function() {
                 token: 'token'
             });
 
-            done(null, {permissions: {pull: true}});
+            done(null, {id: 1, permissions: {pull: true}});
+        });
+
+        var repoStub = sinon.stub(Repo, 'findOne', function(query, done) {
+
+            var repo = {token: 'token', reviewers: null};
+            assert.equal(query.repo, 1);
+
+            if(typeof done === 'function') {
+                return done(null, repo);
+            }
+
+            return {
+                select: function(select) {
+                    assert.equal(select, '+token');
+                    return {
+                        exec: function(done) {
+                            done(null, repo);
+                        }
+                    };
+                }
+            };
         });
 
         var starStub = sinon.stub(Star, 'create', function(args, done) {
@@ -138,6 +160,7 @@ describe('star:set', function() {
                 repo: 1,
                 user: 3,
                 name: 'login',
+                reviewer: null,
                 created_at: '4'
             });
 
@@ -203,12 +226,14 @@ describe('star:set', function() {
 
         star.set(req, function(err, res) {
             sinon.assert.called(githubStub);
+            sinon.assert.called(repoStub);
             sinon.assert.called(starStub);
             sinon.assert.called(notificationStub);
             sinon.assert.called(dateStub);
             sinon.assert.called(statusStub);
             sinon.assert.called(emitStub);
             githubStub.restore();
+            repoStub.restore();
             starStub.restore();
             notificationStub.restore();
             dateStub.restore();

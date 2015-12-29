@@ -12,11 +12,11 @@ module.directive('onboard', ['$rootScope', '$stateParams', '$RPC', '$timeout', '
                 scope.actions = [
                     {key: 'user:addRepo', text: 'Add repo'},
                     {key: 'pullRequests:get', text: 'View pull request', elementclass: 'ob-pull'},
-                    {key: 'pullRequests:createComment', text: 'Create line note', elementclass: 'ob-create'}, //
+                    {key: 'pullRequests:createComment', text: 'Create line note', elementclass: 'ob-create'},
                     {key: 'pullRequests:createFixComment', text: 'Create comment with !fix status', elementclass: 'ob-addstatus'},
                     {key: 'pullRequests:createFixedComment', text: 'Create comment with !fixed status', elementclass: 'ob-addstatus'},
-                    {key: 'star:add', text: 'Add ninja star', elementclass: 'ob-star'}, //
-                    {key: 'pullRequests:merge', text: 'Merge pull request', elementclass: 'ob-merge'} //
+                    {key: 'star:add', text: 'Add ninja star', elementclass: 'ob-star'},
+                    {key: 'pullRequests:merge', text: 'Merge pull request', elementclass: 'ob-merge'}
                 ];
 
                 var getActions = function() {

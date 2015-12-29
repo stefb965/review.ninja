@@ -20,15 +20,14 @@
             </p>
             <p ng-bind-html="pull.html"></p>
           </div>
-          <merge-button pull="pull"
-                        status="status.value" 
-                        analytics-on="click" 
+          <merge-button repo="repo"
+                        pull="pull"
+                        status="status.value"
                         analytics-event="Merge PR"
                         analytics-category="Advanced"
                         permissions="repo.permissions"
                         reposettings="reposettings"
                         protection="branch.value.protection"
-                        get-long-star-text="getLongStarText()"
                         ng-show="status.loaded">
           </merge-button>
         </div>
@@ -124,21 +123,22 @@
                     </button>
                     <div class="btn-group btn-group-lg">
                       <button type="button"
-                              class="btn btn-ninja dropdown-toggle"
-                              ng-class="{'btn-threshold-missing': pull.stars.length <  reposettings.value.threshold,
-                                         'btn-threshold-reached': pull.stars.length >= reposettings.value.threshold}"
+                              class="btn btn-ninja dropdown-toggle text-primary"
                               data-toggle="dropdown"
                               ng-disabled="!pull.stars.length"
                               style="font-size:20px;">
                         {{ pull.stars.length }}
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right star-dropdown" role="menu">
-                        <li><a href="">{{ getStarText() }}</a></li>
                         <li ng-repeat="star in pull.stars | orderBy:'-created_at'">
                           <a href="#">
                             <img ng-show="star.user.value" ng-src="{{ star.user ? star.user.value.avatar_url + '&s=56' : '/assets/images/user_deleted.jpg'}}" width="56px" class="pull-left" />
                             <div class="truncate" style="width: 210px;">
-                              <strong><a ng-href="{{ star.user.value.html_url }}" target="_blank">{{ star.name }}</a></strong><br />
+                              <strong><a ng-href="{{ star.user.value.html_url }}" target="_blank">{{ star.name }}</a></strong>
+                              <i class="fa fa-check-circle text-success" 
+                                 ng-show="star.reviewer" 
+                                 tooltip="On the review team"
+                                 tooltip-placement="bottom"></i><br />
                               ninja starred this<br />
                               <small moment="star.created_at"></small>
                             </div>
@@ -148,9 +148,6 @@
                       </ul>
                     </div>
                   </div>
-                </div>
-                <div class="col-sm-4 text-right">
-                  <small>{{ getStarText() }} <a ui-sref="repo.settings()" ng-show="repo.permissions.push"><i class="fa fa-pencil-square-o"></i></a></small>
                 </div>
               </div>
             </div>

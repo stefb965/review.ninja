@@ -11,12 +11,14 @@ var status = require('../services/status');
 var notification = require('../services/notification');
 
 module.exports = function(req, res) {
+
     var user = req.args.repository.owner.login;
     var repo = req.args.repository.name;
+    var token = req.args.token;
+    var number = req.args.pull_request.number;
     var sender = req.args.sender;
     var repo_uuid = req.args.repository.id;
     var sha = req.args.pull_request.head.sha;
-    var number = req.args.pull_request.number;
 
     // for the thread
     var comment = req.args.comment;
@@ -24,52 +26,45 @@ module.exports = function(req, res) {
     var path = req.args.comment.path;
     var position = req.args.comment.original_position;
 
-    User.findOne({ _id: req.params.id }, function(err, ninja) {
+    var actions = {
+        created: function() {
+            status.update({
+                sha: sha,
+                user: user,
+                repo: repo,
+                number: number,
+                repo_uuid: repo_uuid,
+                token: token
+            });
 
-        if(err || !ninja) {
-            return res.status(404).send('User not found');
-        }
+            var thread = flags.review([comment]);
 
-        var actions = {
-            created: function() {
-                status.update({
-                    sha: sha,
+            if(thread.open > 0) {
+                notification.sendmail('review_thread_opened', user, repo, repo_uuid, token, number, {
                     user: user,
                     repo: repo,
                     number: number,
-                    repo_uuid: repo_uuid,
-                    token: ninja.token
+                    sender: req.args.sender,
+                    settings: url.reviewSettings(user, repo),
+                    url: url.reviewPullRequest(user, repo, number)
                 });
-
-                var thread = flags.review([comment]);
-
-                if(thread.open > 0) {
-                    notification.sendmail('review_thread_opened', user, repo, repo_uuid, ninja.token, number, {
-                        user: user,
-                        repo: repo,
-                        number: number,
-                        sender: req.args.sender,
-                        settings: url.reviewSettings(user, repo),
-                        url: url.reviewPullRequest(user, repo, number)
-                    });
-                }
-                else if(thread.closed > 0) {
-                    notification.sendmail('review_threads_closed', user, repo, repo_uuid, ninja.token, number, {
-                        user: user,
-                        repo: repo,
-                        number: number,
-                        sender: req.args.sender,
-                        settings: url.reviewSettings(user, repo),
-                        url: url.reviewPullRequest(user, repo, number)
-                    });
-                }
             }
-        };
-
-        if (actions[req.args.action]) {
-            actions[req.args.action]();
+            else if(thread.closed > 0) {
+                notification.sendmail('review_threads_closed', user, repo, repo_uuid, token, number, {
+                    user: user,
+                    repo: repo,
+                    number: number,
+                    sender: req.args.sender,
+                    settings: url.reviewSettings(user, repo),
+                    url: url.reviewPullRequest(user, repo, number)
+                });
+            }
         }
+    };
 
-        res.end();
-    });
+    if (actions[req.args.action]) {
+        actions[req.args.action]();
+    }
+
+    res.end();
 };

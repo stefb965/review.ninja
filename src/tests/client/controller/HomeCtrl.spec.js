@@ -26,6 +26,7 @@ describe('Home Controller', function() {
 
         scope = $rootScope.$new();
         rootScope = $rootScope;
+        rootScope.user = {value: {repos: []}};
 
         // create promise for user
         var deferred = $q.defer();
@@ -142,15 +143,15 @@ describe('Home Controller', function() {
         httpBackend.expect('POST', '/api/github/call').respond({value: true});
         var HomeCtrl = createCtrl();
         httpBackend.flush();
-        var fakeRepo = {name: 'test', owner: {login: 'gabe'}};
+        var fakeRepo = {name: 'repo', owner: {login: 'user'}};
         httpBackend.expect('POST', '/api/webhook/remove', {
-            user: 'gabe',
-            repo: 'test'
+            user: 'user',
+            repo: 'repo'
         }).respond({
             data: true
         });
         var removeStub = sinon.stub(scope, 'remove', function(repo) {
-            (repo).should.be.eql({name: 'test', owner: {login: 'gabe'}});
+            (repo).should.be.eql({name: 'repo', owner: {login: 'user'}});
         });
         scope.removeWebhook(fakeRepo);
         httpBackend.flush();

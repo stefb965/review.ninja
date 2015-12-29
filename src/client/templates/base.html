@@ -1,26 +1,6 @@
 <div class="row">
 
-  <!-- the webhook notification -->
-  <div class="container-fluid" ng-cloak>
-    <div class="row" ng-show="hook.loaded && !hook.error && !hook.value">
-      <div class="col-md-12 alert alert-warning" style="margin:0;">
-        <strong>Warning!</strong> A webhook is missing for this repository. 
-        <i class="fa fa-lg fa-spinner fa-spin pull-right" ng-show="creating.loading"></i>
-        <button type="button" class="btn btn-default btn-xs pull-right" ng-click="createWebhook()" ng-show="!creating.loading">Add Webhook</button>
-      </div>
-    </div>
-    <div class="row" ng-show="created">
-      <div class="col-md-12 alert alert-success" style="margin:0;">
-        <button type="button" class="close" data-dismiss="alert">
-          <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-        </button>
-        <strong>Success!</strong> The webhook was created successfully.
-      </div>
-    </div>
-  </div>
-
-  <!-- onboarding -->
-  <onboard class="col-sm-12" style="padding:0; margin-bottom:-5px;"></onboard>
+  <onboard></onboard>
 
 </div>
 

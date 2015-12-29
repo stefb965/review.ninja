@@ -1,8 +1,28 @@
-<div class="onboard alert alert-info alert-dismissable" 
-     style="margin:0;" 
-     ng-show="!user.value.history.taskbar2">
+<div class="alert alert-info alert-dismissable" style="margin: 0;" ng-show="!user.value.history.taskbar2">
+  <button type="button" 
+          analytics-on="click" 
+          analytics-event="Onboarding dismissed" 
+          analytics-category="Basic" 
+          class="close" 
+          data-dismiss="alert" 
+          ng-click="dismiss('taskbar2')" 
+          ng-show="!complete"
+          aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <button type="button" 
+          analytics-on="click" 
+          analytics-event="Onboarding completed" 
+          analytics-category="Basic" 
+          class="close" 
+          data-dismiss="alert" 
+          ng-click="dismiss('taskbar2')" 
+          ng-show="complete"
+          aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 
-  <ul class="onboard-list" ng-class="{complete: complete}" ng-show="!complete">
+  <ul class="onboard-list" ng-class="{complete: complete}" ng-show="complete===false">
     <li><strong>Getting started to-do's:</strong></li>
     <li ng-repeat="action in actions" ng-class="{complete: action.val}">
       <span class="octicon octicon-check"></span>
@@ -14,15 +34,12 @@
     </li>
   </ul>
   
-
   <div class="onboard-complete" ng-class="{complete: complete}">
     <strong>Hey, you’re done, nice job!</strong> 
     You’ve covered all the ReviewNinja basics, and we hope you enjoy using the tool! 
     If you haven’t added a repo of your own yet, now’s a good time! 
-    <a ui-sref="home({addrepo: true})" style="text-decoration:underline"><strong>Add repo</strong></a>.
+    <a ui-sref="home({addrepo: true})" ng-click="dismiss('taskbar2')" style="text-decoration:underline">
+      <strong>Add repo</strong>
+    </a>
   </div>
-
-  <button type="button" analytics-on="click" analytics-event="Onboarding dismissed" analytics-category="Basic" class="close" style="top:-20px;" data-dismiss="alert" ng-click="dismiss('taskbar2')" ng-show="!complete">&times</button>
-  <button type="button" analytics-on="click" analytics-event="Onboarding completed" analytics-category="Basic" class="close" style="top:-20px;" data-dismiss="alert" ng-click="dismiss('taskbar2')" ng-show="complete">&times</button>
-
 </div>

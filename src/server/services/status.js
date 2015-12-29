@@ -10,12 +10,7 @@ module.exports = {
 
     update: function(args) {
 
-        Repo.findOneAndUpdate({
-            repo: args.repo_uuid
-        }, {}, {
-            new: true,
-            upsert: true
-        }, function(err, repo) {
+        Repo.findOne({repo: args.repo_uuid}, function(err, repo) {
 
             repo = repo || {threshold: 1};
 
@@ -28,15 +23,13 @@ module.exports = {
                 token: args.token
             }, function(err, status) {
 
-                var reached = status.stars >= repo.threshold;
-                var state = status.issues.open ? 'failure' : reached ? 'success' : 'pending';
-                var diff = repo.threshold - status.stars;
+                var state = status.issues.open ? 'failure' : status.stars >= repo.threshold ? 'success' : 'pending';
 
-                var text = 'ReviewNinja: ';
-                text = text + (reached ? status.stars + (status.stars === 1 ? ' star, ' : ' stars, ')
-                                       : diff + (diff === 1 ? ' star' : ' stars') + ' needed, ');
-                text = text + status.issues.open;
-                text = text + (status.issues.open === 1 ? ' issue' : ' issues');
+                var description = status.stars + ' (of ' + repo.threshold + ') ninja stars';
+
+                if(status.issues.total > 0) {
+                    description += ', ' + status.issues.closed + ' (of ' + status.issues.total + ') problems resolved';
+                }
 
                 github.call({
                     obj: 'statuses',
@@ -46,7 +39,7 @@ module.exports = {
                         repo: args.repo,
                         sha: args.sha,
                         state: state,
-                        description: text,
+                        description: description,
                         target_url: url.reviewPullRequest(args.user, args.repo, args.number),
                         context: 'code-review/reviewninja'
                     },

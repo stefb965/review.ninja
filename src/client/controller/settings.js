@@ -9,22 +9,58 @@
 
 module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$modal', 'repo',
     function($scope, $stateParams, $HUB, $RPC, $modal, repo) {
+
         $scope.repo = repo;
+
+        $scope.threshold = 1;
+        $scope.comment = true;
+        $scope.reviewTeam = null;
 
         $scope.settings = $RPC.call('settings', 'get', {
             repo_uuid: repo.value.id
         });
 
-        $scope.threshold = 1;
-        $scope.comment = true;
-
-        $scope.reposettings = $RPC.call('repo', 'get', {
+        $scope.repoSettings = $RPC.call('repo', 'get', {
             repo_uuid: repo.value.id
         });
 
-        $scope.slack = $RPC.call('repo', 'getSlack', {
+        $scope.slack = $RPC.call('slack', 'get', {
             repo_uuid: repo.value.id
+        }, function(err, slack) {
+            if(!err) {
+                slack.value.token = $RPC.call('slack', 'token', {
+                    repo_uuid: repo.value.id
+                });
+            }
         });
+
+        if(repo.value.organization) {
+            $scope.teams = $HUB.call('orgs', 'getTeams', {
+              user: $stateParams.user,
+              repo: $stateParams.repo,
+              org: repo.value.organization.login
+          });
+        }
+
+        //
+        // Watches
+        //
+
+        $scope.$watch('teams.value + repoSettings.value.reviewers', function() {
+            if($scope.teams && $scope.teams.value && $scope.repoSettings.value) {
+                $scope.reviewTeam = null;
+                $scope.teams.value.forEach(function(team) {
+                    if(team.id === $scope.repoSettings.value.reviewers) {
+                        $scope.reviewTeam = team;
+                    }
+                });
+            }
+        });
+
+
+        //
+        // Actions
+        //
 
         $scope.setNotifications = function() {
             $RPC.call('settings', 'setNotifications', {
@@ -61,38 +97,21 @@ module.controller('SettingsCtrl', ['$scope', '$stateParams', '$HUB', '$RPC', '$m
             $scope.setWatched(watched);
         };
 
-        $scope.changeThreshold = function() {
-            $RPC.call('repo', 'setThreshold', {
-                repo_uuid: repo.value.id,
-                user: $stateParams.user,
-                repo: $stateParams.repo,
-                threshold: $scope.reposettings.value.threshold
-            }, function(err, settings) {
+        $scope.setRepo = function(args) {
+            args.repo_uuid = repo.value.id;
+            $RPC.call('repo', 'set', args, function(err, repo) {
                 if(!err) {
-                    $scope.reposettings.value.threshold = settings.value.threshold;
+                    $scope.repoSettings.value = repo.value;
                 }
             });
         };
 
-        $scope.toggleComments = function() {
-            $RPC.call('repo', 'setComment', {
-                repo_uuid: repo.value.id,
-                comment: $scope.reposettings.value.comment
-            }, function(err, settings) {
+        $scope.setSlack = function(args) {
+            args.repo_uuid = repo.value.id;
+            $RPC.call('slack', 'set', args, function(err, slack) {
                 if(!err) {
-                    $scope.reposettings.value.comment = settings.value.comment;
-                }
-            });
-        };
-
-        $scope.setSlack = function() {
-            $RPC.call('repo', 'setSlack', {
-                repo_uuid: repo.value.id,
-                slack: $scope.reposettings.value.slack
-            }, function(err, settings) {
-                if(!err) {
-                    $scope.slack.value.token = 'true';
-                    $scope.reposettings.value.slack = settings.value.slack;
+                    $scope.slack.value = slack.value;
+                    $scope.slack.value.token = {value: true};
                 }
             });
         };

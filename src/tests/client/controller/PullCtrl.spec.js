@@ -195,17 +195,6 @@ describe('Pull Controller', function() {
         httpBackend.flush();
     });
 
-    // star text
-    it('should get star text', function() {
-        var PullCtrl = createCtrl();
-        scope.reposettings = {value: {threshold: 2}};
-        var result = scope.getStarText();
-        (result).should.be.exactly('Pull Request needs 1 more ninja star');
-        scope.reposettings.value.threshold = 1;
-        var result2 = scope.getStarText();
-        (result2).should.be.exactly('No more ninja stars needed');
-    });
-
     // set star on pr
     it('should set star', function() {
         PullCtrl = createCtrl();

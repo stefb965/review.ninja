@@ -48,9 +48,9 @@ module.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$lo
                 url: '/:user/:repo',
                 templateUrl: '/templates/base.html',
                 resolve: {
-                    repo: ['$rootScope', '$stateParams', '$HUBService',
-                        function($rootScope, $stateParams, $HUBService) {
-                            return $HUBService.call('repos', 'get', {
+                    repo: ['$rootScope', '$stateParams', '$HUBService', '$RPC',
+                        function($rootScope, $stateParams, $HUBService, $RPC) {
+                            return $HUBService.wrap('repos', 'get', {
                                 user: $stateParams.user,
                                 repo: $stateParams.repo
                             });

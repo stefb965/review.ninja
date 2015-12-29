@@ -380,7 +380,7 @@
 		<text transform="matrix(1 0 0 1.2885 92 42)" fill="#FFA159" font-family="'HelveticaNeue-Bold'" font-size="10.0889"><%= openIssues %></text>
 	</g>
 	<g clip-path="url(#SVGID_2_)">
-		<text transform="matrix(1 0 0 1.2885 105 42)" fill="#FFA159" font-family="'HelveticaNeue'" font-size="10.0889"> open issue<% if(openIssues != 1) { %>s<% } %></text>
+		<text transform="matrix(1 0 0 1.2885 105 42)" fill="#FFA159" font-family="'HelveticaNeue'" font-size="10.0889"> problem<% if(openIssues != 1) { %>s<% } %></text>
 	</g>
 	<g clip-path="url(#SVGID_2_)">
 		<text transform="matrix(1 0 0 1.2885 92 58)" fill="#3E9A94" font-family="'HelveticaNeue-Bold'" font-size="10.0889"><%= stars %></text>

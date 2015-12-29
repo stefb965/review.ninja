@@ -11,6 +11,7 @@ var webhook = require('../services/webhook');
 
 // models
 var User = require('mongoose').model('User');
+var Repo = require('mongoose').model('Repo');
 
 module.exports = {
 
@@ -59,7 +60,9 @@ module.exports = {
             arg: { id: req.args.repo_uuid },
             token: req.user.token
         }, function(err, repo) {
-
+            if(err) {
+                return done(err);
+            }
             if(!repo.permissions.push) {
                 return done({
                     code: 403,
@@ -81,27 +84,16 @@ module.exports = {
                         user.save();
                     }
 
-                    // create hook, if it does not exist
                     if(repo.permissions.admin) {
-                        webhook.get(req.args.user, req.args.repo, req.user.token,
-                            function(err, hook) {
-                                if(!err && !hook) {
-                                    github.call({
-                                        obj: 'repos',
-                                        fun: 'createHook',
-                                        arg: {
-                                            user: repo.owner.login,
-                                            repo: repo.name,
-                                            name: 'web',
-                                            config: { url: url.webhook(user._id), content_type: 'json' },
-                                            events: config.server.github.webhook_events,
-                                            active: true
-                                        },
-                                        token: req.user.token
-                                    });
-                                }
-                            }
-                        );
+                        webhook.create({
+                            user: repo.owner.login,
+                            repo: repo.name,
+                            token: req.user.token
+                        });
+                    }
+
+                    if(repo.permissions.push) {
+                        Repo.findOneAndUpdate({repo: repo.id}, {token: req.user.token}, {upsert: true}).exec();
                     }
                 }
 

@@ -16,27 +16,48 @@
       <div class="col-md-12" style="margin-top: 10px;" ng-show="repo.value.permissions.admin">
         <p class="settingsheading">Merge threshold</p>
         <div style="margin-left: 15px;">
-          <form name="form">
-            <p>For <strong>{{ repo.value.owner.login }}/{{ repo.value.name }}</strong>
-              <input id="threshold" type="number" min="0" max="99" required name="thresholdvalue"
-                     analytics-on="change" analytics-event="Change threshold" analytics-category="Advanced" 
-                     ng-model="reposettings.value.threshold"
-                     ng-change="changeThreshold()"
-                     ng-pattern="/[0-9]+/"
-                     ng-class="{'text-warning': form.$invalid}"
-                     class="text-right" /> ninja stars are required to merge.
-               <small class="text-danger" ng-show="form.$invalid && reposettings.loaded"><br />Threshold must be between 0 and 99.</small>
-            </p>
-          </form>
+          <input id="threshold" type="number" min="1" max="99"
+              required name="thresholdvalue"
+              ng-model="repoSettings.value.threshold"
+              ng-pattern="/[0-9]+/"
+              ng-change="setRepo({threshold: repoSettings.value.threshold})"
+              ng-class="{'text-warning': form.$invalid}"
+              class="text-right" />
+            ninja star<span ng-show="repoSettings.value.threshold > 1">s</span>
+          <span ng-show="teams && teams.loaded && !teams.error && !(repoSettings.value.reviewers && !reviewTeam)">
+            from
+            <div class="btn-group" dropdown ng-show="teams">
+              <button type="button"
+                      class="btn btn-default dropdown-toggle"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                {{ reviewTeam.name || 'Anyone' }} <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a href="" ng-click="setRepo({reviewers: null})">Anyone</a></li>
+                <li ng-repeat="team in teams.value">
+                  <a href="" ng-click="setRepo({reviewers: team.id})">{{ team.name }}</a>
+                </li>
+              </ul>
+            </div> 
+          </span>
+          <span ng-show="teams && teams.loaded && repoSettings.value.reviewers && !reviewTeam">
+           from the <strong>review team</strong>
+          </span> needed to merge.
+          <small ng-show="reviewTeam.privacy === 'secret'">
+            <br />We strongly recommend <strong>{{ reviewTeam.name }}</strong> be a visible team.
+          </small>
+          <small ng-show="teams && teams.loaded && repoSettings.value.reviewers && !reviewTeam">
+            <br /><a href="https://docs.review.ninja/stars" target="_blank">Why can't I change the review team?</a>
+          </small>
         </div>
       </div>
       <div class="col-md-12" style="margin-top: 20px;" ng-show="repo.value.permissions.admin">
         <p class="settingsheading">ReviewNinja content in GitHub</p>
         <div style="margin-left: 15px;">
-          <div>
-            <input id="comments" type="checkbox" ng-model="reposettings.value.comment" ng-change="toggleComments()" />
-            <label for="comments">Allow ReviewNinja to comment in <strong>{{ repo.value.owner.login }}/{{ repo.value.name }}</strong> pull request conversations in GitHub.</label>
-          </div>
+          <input id="comments" type="checkbox" ng-model="repoSettings.value.comment" ng-change="setRepo({comment: repoSettings.value.comment})" />
+          <label for="comments">Allow ReviewNinja to comment in <strong>{{ repo.value.owner.login }}/{{ repo.value.name }}</strong> pull request conversations in GitHub.</label>
         </div>
       </div>
       <div class="col-md-12" style="margin-top: 20px;">
@@ -104,38 +125,38 @@
         <form style="margin:10px 15px;">
           <div class="form-group" style="max-width:450px">
             <label>Token</label>
-            <div ng-hide="!updatingSlackToken && slack.value.token === 'true'">
+            <div ng-hide="!updatingSlackToken && slack.value.token.value">
               <input type="password" 
                      class="form-control" 
-                     ng-model="reposettings.value.slack.token"
+                     ng-model="slackToken"
                      ng-model-options="{updateOn: 'blur'}" 
-                     ng-change="setSlack(); updatingSlackToken = false;">
+                     ng-change="setSlack({token: slackToken})">
             </div>
           </div>
           <div class="form-group" style="max-width:450px;">
-            <span class="form-control-static" ng-show="!updatingSlackToken && slack.value.token === 'true'">
-              ****** <a href="" ng-click="updatingSlackToken = true;">click to change</a>
+            <span class="form-control-static" ng-show="!updatingSlackToken && slack.value.token.value">
+              ****** <a href="" ng-click="updatingSlackToken = true">click to change</a>
             </span>
           </div>
-          <div class="form-group" style="max-width:450px">
+          <div class="form-group" ng-show="slack.value.token.value" style="max-width:450px">
             <label>Channel</label>
             <input type="text" 
                    class="form-control" 
                    placeholder="#general" 
-                   ng-model="reposettings.value.slack.channel" 
+                   ng-model="slack.value.channel" 
                    ng-model-options="{updateOn: 'blur'}" 
-                   ng-change="setSlack()">
+                   ng-change="setSlack({channel: slack.value.channel})">
           </div>
-          <div class="form-group" ng-show="slack.value.token === 'true'">
+          <div class="form-group" ng-show="slack.value.token.value">
             <label>Choose the ReviewNinja events that you want posted to Slack</label><br />
 
-            <input type="checkbox" ng-model="reposettings.value.slack.events.star" ng-change="setSlack()" />
+            <input type="checkbox" ng-model="slack.value.events.star" ng-change="setSlack({events: slack.value.events})" />
             <label>Ninja stars</label><br />
 
-            <input type="checkbox" ng-model="reposettings.value.slack.events.pull_request" ng-change="setSlack()" />
+            <input type="checkbox" ng-model="slack.value.events.pull_request" ng-change="setSlack({events: slack.value.events})" />
             <label>New pull requests</label><br />
 
-            <input type="checkbox" ng-model="reposettings.value.slack.events.merge" ng-change="setSlack()" />
+            <input type="checkbox" ng-model="slack.value.events.merge" ng-change="setSlack({events: slack.value.events})" />
             <label>Merged pull requests</label>
           </div>
         </form>

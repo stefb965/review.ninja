@@ -88,7 +88,8 @@ describe('repo:setComment', function() {
 
         var req = {
             args: {
-                repo_uuid: 'repo_uuid'
+                repo_uuid: 'repo_uuid',
+                comment: true
             },
             user: {
                 token: 'token'
@@ -99,12 +100,13 @@ describe('repo:setComment', function() {
 
         var doneStub = function(err, res) {
             assert.deepEqual(err, {
-                msg: 'Insufficient permissions'
+                code: 403,
+                text: 'Forbidden'
             });
             calledOnceSpy();
         };
 
-        repo.setComment(req, doneStub);
+        repo.set(req, doneStub);
         assert(calledOnceSpy.calledOnce);
         githubStub.restore();
         done();
@@ -125,13 +127,13 @@ describe('repo:setComment', function() {
 
         var repoStub = sinon.stub(Repo, 'findOneAndUpdate', function(query, args, obj, done) {
             assert.equal(query.repo, 'repo_uuid');
-            assert.equal(args.comment, 'test');
+            assert.equal(args.comment, true);
         });
 
         var req = {
             args: {
                 repo_uuid: 'repo_uuid',
-                comment: 'test'
+                comment: true
             },
             user: {
                 token: 'token'
@@ -144,7 +146,7 @@ describe('repo:setComment', function() {
             calledOnceSpy();
         };
 
-        repo.setComment(req, doneStub);
+        repo.set(req, doneStub);
         githubStub.restore();
         repoStub.restore();
         done();
