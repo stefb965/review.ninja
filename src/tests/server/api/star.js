@@ -13,6 +13,7 @@ global.io = {emit: function() {}};
 var User = require('../../../server/documents/user').User;
 var Star = require('../../../server/documents/star').Star;
 var Repo = require('../../../server/documents/repo').Repo;
+var Slack = require('../../../server/documents/slack').Slack;
 var Settings = require('../../../server/documents/settings').Settings;
 
 // services
