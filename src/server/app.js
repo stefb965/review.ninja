@@ -1,5 +1,6 @@
 'use strict';
 
+require('newrelic');
 var async = require('async');
 var colors = require('colors');
 var express = require('express');

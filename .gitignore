@@ -14,3 +14,4 @@ src/client/assets/styles/app.css.map
 npm-shrinkwrap.json
 .idea/
 docker-compose.yml
+newrelic_agent.log
