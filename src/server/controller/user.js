@@ -49,11 +49,12 @@ router.get('/auth/github/callback',
 );
 
 router.get('/auth/slack',
-    passport.authenticate('slack'));
+    passport.authorize('slack'));
 
 router.get('/auth/slack/callback',
-    passport.authenticate('slack'),
+    passport.authorize('slack'),
     function(req, res) {
+        // do something
         res.redirect('/');
     }
 );
