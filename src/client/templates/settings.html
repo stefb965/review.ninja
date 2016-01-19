@@ -123,31 +123,10 @@
           </a>
         </p>
         <form style="margin:10px 15px;">
-          <div class="form-group" style="max-width:450px">
-            <label>Token</label>
-            <div ng-hide="!updatingSlackToken && slack.value.token.value">
-              <input type="password" 
-                     class="form-control" 
-                     ng-model="slackToken"
-                     ng-model-options="{updateOn: 'blur'}" 
-                     ng-change="setSlack({token: slackToken})">
-            </div>
-          </div>
-          <div class="form-group" style="max-width:450px;">
-            <span class="form-control-static" ng-show="!updatingSlackToken && slack.value.token.value">
-              ****** <a href="" ng-click="updatingSlackToken = true">click to change</a>
-            </span>
-          </div>
-          <div class="form-group" ng-show="slack.value.token.value" style="max-width:450px">
-            <label>Channel</label>
-            <input type="text" 
-                   class="form-control" 
-                   placeholder="#general" 
-                   ng-model="slack.value.channel" 
-                   ng-model-options="{updateOn: 'blur'}" 
-                   ng-change="setSlack({channel: slack.value.channel})">
-          </div>
-          <div class="form-group" ng-show="slack.value.token.value">
+          <a href="/auth/slack" target="_self">
+            <img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x">
+          </a>
+          <div class="form-group" style="margin-top: 10px;">
             <label>Choose the ReviewNinja events that you want posted to Slack</label><br />
 
             <input type="checkbox" ng-model="slack.value.events.star" ng-change="setSlack({events: slack.value.events})" />

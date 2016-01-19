@@ -1,10 +1,9 @@
 'use strict';
-var github = require('../services/github');
+
 var url = require('../services/url');
 var passport = require('passport');
 var Strategy = require('passport-github').Strategy;
 var merge = require('merge');
-var sugar = require('array-sugar');
 
 passport.use(new Strategy({
         clientID: config.server.github.client,
