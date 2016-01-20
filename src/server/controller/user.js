@@ -48,14 +48,23 @@ router.get('/auth/github/callback',
     }
 );
 
-router.get('/auth/slack',
-    passport.authorize('slack'));
+router.get('/auth/slack', function(req, res, next) {
+
+    req.session.next = req.query.next;
+
+    req.session.repo = req.query.repo;
+
+    passport.authorize('slack')(req, res, next);
+});
 
 router.get('/auth/slack/callback',
-    passport.authorize('slack'),
+    function(req, res, next) {
+        passport.authorize('slack', {failureRedirect: req.session.next || '/'})(req, res, next);
+    },
     function(req, res) {
-        // do something
-        res.redirect('/');
+        res.redirect(req.session.next || '/');
+        req.session.next = null;
+        req.session.repo = null;
     }
 );
 

@@ -38,10 +38,6 @@ module.exports = {
                 });
             }
 
-            if(req.args.channel && req.args.channel.charAt(0) !== '#') {
-                req.args.channel = '#' + req.args.channel;
-            }
-
             Slack.findOneAndUpdate({repo: req.args.repo_uuid}, req.args, {new: true, upsert: true}, done);
         });
     },
