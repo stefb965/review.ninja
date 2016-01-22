@@ -1,9 +1,9 @@
 'use strict';
+
 var passport = require('passport');
 var express = require('express');
 var path = require('path');
 var github = require('../services/github');
-var papertrail = require('../services/papertrail');
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // User controller
@@ -33,8 +33,6 @@ router.get('/auth/github/callback',
         failureRedirect: '/'
     }),
     function(req, res) {
-        papertrail.info('successful login by ' + req.user.login);
-
         github.call({
             obj: 'user',
             fun: 'get',
@@ -50,9 +48,28 @@ router.get('/auth/github/callback',
     }
 );
 
+router.get('/auth/slack', function(req, res, next) {
+
+    req.session.next = req.query.next;
+
+    req.session.repo = req.query.repo;
+
+    passport.authorize('slack')(req, res, next);
+});
+
+router.get('/auth/slack/callback',
+    function(req, res, next) {
+        passport.authorize('slack', {failureRedirect: req.session.next || '/'})(req, res, next);
+    },
+    function(req, res) {
+        res.redirect(req.session.next || '/');
+        req.session.next = null;
+        req.session.repo = null;
+    }
+);
+
 router.get('/logout',
     function(req, res, next) {
-        papertrail.info('successful logout by ' + req.user.login);
         req.logout();
         res.redirect('/');
     }
