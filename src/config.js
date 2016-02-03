@@ -44,7 +44,9 @@ module.exports = {
         slack: {
             host: process.env.SLACK_HOST,
             port: process.env.SLACK_PORT,
-            path: process.env.SLACK_PATH
+            path: process.env.SLACK_PATH,
+            client: process.env.SLACK_CLIENT,
+            secret: process.env.SLACK_SECRET
         },
 
         localport: process.env.PORT || 5000,
