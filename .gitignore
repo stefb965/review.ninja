@@ -10,6 +10,7 @@ test
 coverage
 src/client/assets/styles/app.css
 src/client/assets/styles/app.css.map
+src/server/monkey/*.js
 .sass-cache
 npm-shrinkwrap.json
 .idea/
