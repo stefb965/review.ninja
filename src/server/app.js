@@ -86,7 +86,7 @@ async.series([
 
         if(config.server.https.certs) {
             glob(config.server.https.certs, function(err, file) {
-                if (file && file.length) {
+                if(file && file.length) {
                     file.forEach(function(f) {
                         try {
                             https.globalAgent.options.ca = https.globalAgent.options.ca || [];
@@ -147,7 +147,7 @@ async.series([
 
         async.eachSeries(config.server.migrations, function(p, callback) {
             glob(p, function(err, file) {
-                if (file && file.length) {
+                if(file && file.length) {
                     file.forEach(function(f) {
                         try {
                             migrator.add(require(f));
@@ -186,7 +186,7 @@ async.series([
 
         async.eachSeries(config.server.documents, function(p, callback) {
             glob(p, function(err, file) {
-                if (file && file.length) {
+                if(file && file.length) {
                     file.forEach(function(f) {
                         try {
                             global.models = merge(global.models, require(f));
@@ -212,7 +212,7 @@ async.series([
 
         async.eachSeries(config.server.passport, function(p, callback) {
             glob(p, function(err, file) {
-                if (file && file.length) {
+                if(file && file.length) {
                     file.forEach(function(f) {
                         console.log('✓ '.bold.green + path.relative(process.cwd(), f));
                         require(f);
@@ -233,7 +233,7 @@ async.series([
 
         async.eachSeries(config.server.controller, function(p, callback) {
             glob(p, function(err, file) {
-                if (file && file.length) {
+                if(file && file.length) {
                     file.forEach(function(f) {
                         try {
                             app.use('/', require(f));
@@ -259,7 +259,7 @@ async.series([
 
         async.eachSeries(config.server.api, function(p, callback) {
             glob(p, function(err, file) {
-                if (file && file.length) {
+                if(file && file.length) {
                     file.forEach(function(f) {
                         console.log('✓ '.bold.green + path.relative(process.cwd(), f));
                         api[path.basename(f, '.js')] = require(f);
@@ -280,7 +280,7 @@ async.series([
 
         async.eachSeries(config.server.webhooks, function(p, callback) {
             glob(p, function(err, file) {
-                if (file && file.length) {
+                if(file && file.length) {
                     file.forEach(function(f) {
                         console.log('✓ '.bold.green + path.relative(process.cwd(), f));
                         webhooks[path.basename(f, '.js')] = require(f);
@@ -289,6 +289,28 @@ async.series([
                 callback();
             });
         }, callback);
+    },
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Bootstrap monkey patch
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    function(callback) {
+
+        console.log('bootstrap monkey patch'.bold);
+
+        async.eachSeries(config.server.monkey, function(m, callback) {
+            glob(m, function(err, file) {
+                if(file && file.length) {
+                    file.forEach(function(f) {
+                        console.log('✓ '.bold.green + path.relative(process.cwd(), f));
+                        require(f);
+                    });
+                }
+                callback();
+            });
+        }, callback);
+
     }
 
 ], function(err, res) {

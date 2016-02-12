@@ -136,6 +136,10 @@ module.exports = {
 
         passport: [
             __dirname + '/server/passports/*.js'
+        ],
+
+        monkey: [
+            __dirname + '/server/monkey/*.js'
         ]
     },
 
