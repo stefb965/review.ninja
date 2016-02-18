@@ -41,10 +41,6 @@ app.use('/api', require('./middleware/authenticated'));
 app.use('/github/webhook', require('./middleware/param'));
 app.use('/github/webhook', require('./middleware/token'));
 
-// papertrail middleware
-app.use('/api', require('./middleware/papertrail'));
-app.use('/github/webhook', require('./middleware/papertrail'));
-
 // karma middleware
 app.use('/api', require('./middleware/stats'));
 
