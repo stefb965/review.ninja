@@ -33,6 +33,9 @@ router.get('/accept', function(req, res) {
 });
 
 router.all('/*', function(req, res) {
+
+    res.set('Cache-Control', 'private, max-age=0, no-cache, no-store');
+
     if (req.isAuthenticated()) {
         models.User.findOne({
             uuid: req.user.id
