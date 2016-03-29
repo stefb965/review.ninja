@@ -1,6 +1,6 @@
 'use strict';
+
 var GitHubApi = require('github');
-var papertrail = require('../services/papertrail');
 
 module.exports = {
 
@@ -43,9 +43,6 @@ module.exports = {
         }
 
         github[obj][fun](arg, function(err, res) {
-            if(err) {
-                papertrail.error(JSON.stringify(err));
-            }
 
             var meta = null;
 
