@@ -146,6 +146,8 @@ module.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$lo
 
         $urlRouterProvider.otherwise('/');
 
+        $locationProvider.html5Mode(true);
+
         $analyticsProvider.firstPageview(true);
         $analyticsProvider.withAutoBase(true);
 
