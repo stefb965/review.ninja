@@ -21,43 +21,40 @@ module.exports = {
         // false  | if user is not on the review team
 
         Star.count({repo: args.repo_uuid, sha: args.sha, reviewer: {$ne: false}}, function(err, stars) {
+            var rArgs = {
+                user: args.user,
+                repo: args.repo,
+                number: args.number,
+                per_page: 100
+            };
 
-            stars = stars || 0;
-
-            github.call({
-                obj: 'pullRequests',
-                fun: 'getComments',
-                arg: {
-                    user: args.user,
-                    repo: args.repo,
-                    number: args.number,
-                    per_page: 100
-                },
-                token: args.token
-            }, function(err, prComments) {
-
-              github.call({
-                  obj: 'issues',
-                  fun: 'getComments',
-                  arg: {
-                      user: args.user,
-                      repo: args.repo,
-                      number: args.number,
-                      per_page: 100
-                  },
-                  token: args.token
-              }, function(err, issueComments) {
-                
-                var comments = prComments.concat(issueComments) || [];
-
-                done(null, {
-                    stars: stars,
-                    issues: flags.review(comments)
+            async.parallel([
+              function(cb) {
+                github.call({
+                    obj: 'pullRequests',
+                    fun: 'getComments',
+                    arg: rArgs,
+                    token: args.token
+                }, function(err, results) {
+                  cb(results);
                 });
+              }, function(cb) {
+                github.call({
+                    obj: 'issues',
+                    fun: 'getComments',
+                    arg: rArgs,
+                    token: args.token
+                }, function(err, results) {
+                  cb(results);
+                });
+              }
+            ], function(comments) {
+              done(null, {
+                  stars: stars || 0,
+                  issues: flags.review(comments || [])
               });
             });
         });
-
     },
 
     badgeComment: function(user, repo, repo_uuid, number) {
