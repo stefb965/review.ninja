@@ -34,14 +34,27 @@ module.exports = {
                     per_page: 100
                 },
                 token: args.token
-            }, function(err, comments) {
+            }, function(err, prComments) {
 
-                comments = comments || [];
+              github.call({
+                  obj: 'issues',
+                  fun: 'getComments',
+                  arg: {
+                      user: args.user,
+                      repo: args.repo,
+                      number: args.number,
+                      per_page: 100
+                  },
+                  token: args.token
+              }, function(err, issueComments) {
+                
+                var comments = prComments.concat(issueComments) || [];
 
                 done(null, {
                     stars: stars,
                     issues: flags.review(comments)
                 });
+              });
             });
         });
 
