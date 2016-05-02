@@ -37,7 +37,7 @@
               <ul class="dropdown-menu" 
                   infinite-scroll="teams.getMore()" 
                   infinite-scroll-disabled="teams.loading"
-                  style="height: 250px; overflow-y: scroll;">
+                  style="max-height: 250px; overflow-y: scroll;">
                 <li><a href="" ng-click="setRepo({reviewers: null})">Anyone</a></li>
                 <li ng-repeat="team in teams.value">
                   <a href="" ng-click="setRepo({reviewers: team.id})">{{ team.name }}</a>
