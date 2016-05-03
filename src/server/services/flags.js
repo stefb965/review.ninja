@@ -8,6 +8,8 @@ module.exports = {
 
     review: function(comments) {
 
+        // TODO: enhance to parse markdown lists e.g. [] -> [*]
+
         var threads = {};
 
         var open = 0;
