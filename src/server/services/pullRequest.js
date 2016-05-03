@@ -21,30 +21,41 @@ module.exports = {
         // false  | if user is not on the review team
 
         Star.count({repo: args.repo_uuid, sha: args.sha, reviewer: {$ne: false}}, function(err, stars) {
+            var rArgs = {
+                user: args.user,
+                repo: args.repo,
+                number: args.number,
+                per_page: 100
+            };
 
-            stars = stars || 0;
-
-            github.call({
-                obj: 'pullRequests',
-                fun: 'getComments',
-                arg: {
-                    user: args.user,
-                    repo: args.repo,
-                    number: args.number,
-                    per_page: 100
-                },
-                token: args.token
-            }, function(err, comments) {
-
-                comments = comments || [];
-
+            async.parallel([
+              function(cb) {
+                github.call({
+                    obj: 'pullRequests',
+                    fun: 'getComments',
+                    arg: rArgs,
+                    token: args.token
+                }, function(err, results) {
+                    cb(err, results);
+                });
+              }, function(cb) {
+                github.call({
+                    obj: 'issues',
+                    fun: 'getComments',
+                    arg: rArgs,
+                    token: args.token
+                }, function(err, results) {
+                    cb(err, results);
+                });
+              }
+            ], function(err, results) {
+                var comments = (results[0] || []).concat(results[1] || []);
                 done(null, {
-                    stars: stars,
-                    issues: flags.review(comments)
+                  stars: stars || 0,
+                  issues: flags.review(comments)
                 });
             });
         });
-
     },
 
     badgeComment: function(user, repo, repo_uuid, number) {
