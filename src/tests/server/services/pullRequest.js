@@ -129,7 +129,7 @@ describe('pullRequest:status', function(done) {
 
         var githubStub = sinon.stub(github, 'call');
 
-        pullRequest.status({
+        var mockArgs = {
             repo_uuid: '123',
             sha: '',
             user: 'batman',
@@ -137,16 +137,18 @@ describe('pullRequest:status', function(done) {
             number: 1,
             per_page: 100,
             token: 'token'
-        });
+        };
+
+        pullRequest.status(mockArgs);
 
         sinon.assert.calledWith(githubStub, {
             obj: 'pullRequests',
             fun: 'getComments',
             arg: {
-              user: 'batman',
-              repo: 'batcave',
-              number: 1,
-              per_page: 100
+              user: mockArgs.user,
+              repo: mockArgs.repo,
+              number: mockArgs.number,
+              per_page: mockArgs.per_page
             },
             token:'token'
         });
@@ -155,10 +157,10 @@ describe('pullRequest:status', function(done) {
             obj: 'issues',
             fun: 'getComments',
             arg: {
-              user: 'batman',
-              repo: 'batcave',
-              number: 1,
-              per_page: 100
+              user: mockArgs.user,
+              repo: mockArgs.repo,
+              number: mockArgs.number,
+              per_page: mockArgs.per_page
             },
             token: 'token'
         });
