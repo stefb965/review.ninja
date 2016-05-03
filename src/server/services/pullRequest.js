@@ -36,7 +36,7 @@ module.exports = {
                     arg: rArgs,
                     token: args.token
                 }, function(err, results) {
-                  cb(results);
+                    cb(err, results);
                 });
               }, function(cb) {
                 github.call({
@@ -45,14 +45,15 @@ module.exports = {
                     arg: rArgs,
                     token: args.token
                 }, function(err, results) {
-                  cb(results);
+                    cb(err, results);
                 });
               }
-            ], function(comments) {
-              done(null, {
+            ], function(err, results) {
+                var comments = (results[0] || []).concat(results[1] || []);
+                done(null, {
                   stars: stars || 0,
-                  issues: flags.review(comments || [])
-              });
+                  issues: flags.review(comments)
+                });
             });
         });
     },
