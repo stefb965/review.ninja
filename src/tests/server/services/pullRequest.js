@@ -12,6 +12,7 @@ var pullRequest = require('../../../server/services/pullRequest');
 
 // models
 var Repo = require('../../../server/documents/repo').Repo;
+var Star = require('mongoose').model('Star');
 
 describe('pullRequest:badgeComment', function(done) {
     it('should set github call parameters correctly', function(done) {
@@ -114,6 +115,56 @@ describe('pullRequest:isWatched', function(done) {
             base: {ref: 'master'}
         };
         assert.equal(pullRequest.isWatched(pull, settings), false);
+        done();
+    });
+});
+
+describe('pullRequest:status', function(done) {
+    it('Should get both issue comments and pull request comments', function(done) {
+
+        var starStub = sinon.stub(Star, 'count', function(query, done) {
+            assert.equal(query.repo, '123');
+            done(null, 1);
+        });
+
+        var githubStub = sinon.stub(github, 'call');
+
+        pullRequest.status({
+            repo_uuid: '123',
+            sha: '',
+            user: 'batman',
+            repo: 'batcave',
+            number: 1,
+            per_page: 100,
+            token: 'token'
+        });
+
+        sinon.assert.calledWith(githubStub, {
+            obj: 'pullRequests',
+            fun: 'getComments',
+            arg: {
+              user: 'batman',
+              repo: 'batcave',
+              number: 1,
+              per_page: 100
+            },
+            token:'token'
+        });
+
+        sinon.assert.calledWith(githubStub, {
+            obj: 'issues',
+            fun: 'getComments',
+            arg: {
+              user: 'batman',
+              repo: 'batcave',
+              number: 1,
+              per_page: 100
+            },
+            token: 'token'
+        });
+
+        githubStub.restore();
+        starStub.restore();
         done();
     });
 });
