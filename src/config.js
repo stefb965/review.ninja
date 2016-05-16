@@ -84,7 +84,7 @@ module.exports = {
 
         mongodb: (function() {
 
-            var uri = mongoURI.parse(process.env.MONGODB || process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/reviewninja');
+            var uri = mongoURI.parse(process.env.MONGODB || process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/reviewninja');
 
             return {
                 user: uri.username,
@@ -96,7 +96,7 @@ module.exports = {
             };
         })(),
 
-        mongodb_uri: process.env.MONGODB || process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/reviewninja',
+        mongodb_uri: process.env.MONGODB || process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/reviewninja',
 
         static: {
             lib: [__dirname + '/bower'],
