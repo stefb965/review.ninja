@@ -50,10 +50,13 @@ describe('flags:star', function() {
   it('should return false if no ninja star flag', function(done) {
     var fakeFalseComment1 = 'this has no flag';
     var fakeFalseComment2 = 'this is an !unstar';
+    var fakeFalseComment3 = '👎👎👎';
     var falseResult1 = flags.star(fakeFalseComment1);
     var falseResult2 = flags.star(fakeFalseComment2);
+    var falseResult3 = flags.star(fakeFalseComment3);
     assert.equal(falseResult1, false);
     assert.equal(falseResult2, false);
+    assert.equal(falseResult3, false);
     done();
   });
 });
@@ -81,10 +84,13 @@ describe('flags:unstar', function() {
   it('should return false if no unstar flag', function(done) {
     var fakeFalseComment1 = 'this has no flag';
     var fakeFalseComment2 = 'this is !star';
+    var fakeFalseComment3 = '👍👍👍';
     var falseResult1 = flags.unstar(fakeFalseComment1);
     var falseResult2 = flags.unstar(fakeFalseComment2);
+    var falseResult3 = flags.unstar(fakeFalseComment3);
     assert.equal(falseResult1, false);
     assert.equal(falseResult2, false);
+    assert.equal(falseResult3, false);
     done();
   });
 });
