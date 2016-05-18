@@ -8,8 +8,6 @@ module.exports = {
 
     review: function(comments) {
 
-        // TODO: enhance to parse markdown lists e.g. [] -> [ ]
-
         var threads = {};
 
         var open = 0;
@@ -17,7 +15,6 @@ module.exports = {
 
         var negative = /\!\bfix\b|\!\bresolve\b/g;
         var positive = /\!\bfixed\b|\!\bresolved\b|\!\bcompleted\b/g;
-        var listNeg = /- \[ \]/g;
 
         comments.forEach(function(comment) {
             var ref = reference(comment.original_commit_id, comment.path, comment.original_position);
@@ -30,10 +27,6 @@ module.exports = {
             var state = null;
 
             for(var i = 0; i < threads[ref].length; i++) {
-                if (threads[ref][i].body.match(listNeg) && threads[ref][i].body.match(negative)) {
-                  state = 'open';
-                  break;
-                }
 
                 var neg = threads[ref][i].body.match(negative);
                 var pos = threads[ref][i].body.match(positive);
