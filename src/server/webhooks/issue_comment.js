@@ -27,6 +27,14 @@ module.exports = function(req, res) {
 
     var actions = {
         created: function() {
+            status.update({
+                sha: sha,
+                user: user,
+                repo: repo,
+                number: number,
+                repo_uuid: repo_uuid,
+                token: token
+            });
 
             //
             // Add ninja star
