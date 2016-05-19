@@ -4,7 +4,7 @@ branches:
   - master
   - release
 stats:
-  - url: http://app.review.ninja/count/user
+  - url: https://app.review.ninja/stats/user
     icon: octicon octicon-organization
-  - url: http://app.review.ninja/count/star
+  - url: http://app.review.ninja/stats/star
     icon: octicon octicon-star
