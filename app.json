@@ -11,8 +11,7 @@
   "success_url": "/",
   "env": {
     "HOST": {
-      "description": "The hostname of your application",
-      "value": "reviewninja.herokuapp.com"
+      "description": "The hostname of your application. This can be set to <your-app-name>.herokuapp.com, or alternatively a custom domain."
     },
     "PROTOCOL": {
       "description": "The protocol your application uses, can be either 'http' or 'https'.",
