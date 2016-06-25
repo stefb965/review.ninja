@@ -92,7 +92,6 @@ module.exports = {
                 host: uri.hosts[uri.hosts.length - 1].host,
                 port: uri.hosts[uri.hosts.length - 1].port || 27017,
                 db: uri.database,
-                ssl: uri.options.ssl,
                 collection: 'migrations'
             };
         })(),
