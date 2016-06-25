@@ -44,7 +44,7 @@
     "glob": "^5.0.3",
     "less-middleware": "^2.0.1",
     "merge": "^1.2.0",
-    "minimatch": "^2.0.4",
+    "minimatch": "^3.0.2",
     "mongodb-migrations": "^0.5.0",
     "mongodb-uri": "^0.9.7",
     "mongoose": "^4.3.1",

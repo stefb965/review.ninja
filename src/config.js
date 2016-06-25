@@ -89,9 +89,10 @@ module.exports = {
             return {
                 user: uri.username,
                 password: uri.password,
-                host: uri.hosts[0].host,
-                port: uri.hosts[0].port || 27017,
+                host: uri.hosts[uri.hosts.length - 1].host,
+                port: uri.hosts[uri.hosts.length - 1].port || 27017,
                 db: uri.database,
+                ssl: uri.options.ssl,
                 collection: 'migrations'
             };
         })(),
