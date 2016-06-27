@@ -86,12 +86,18 @@ module.exports = {
 
             var uri = mongoURI.parse(process.env.MONGODB || process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/reviewninja');
 
+            var host = uri.hosts.map(h => h.host + ':' + h.port).join(',');
+
+            var opts = [];
+
+            for(var key in uri.options) {
+                opts.push(key + '=' + uri.options[key]);
+            }
+
             return {
                 user: uri.username,
                 password: uri.password,
-                host: uri.hosts[uri.hosts.length - 1].host,
-                port: uri.hosts[uri.hosts.length - 1].port || 27017,
-                db: uri.database,
+                host: host + '/' + uri.database + '?' + opts.join('&'),
                 collection: 'migrations'
             };
         })(),
