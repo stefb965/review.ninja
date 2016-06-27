@@ -8,7 +8,7 @@ describe('File Directive', function() {
 
     beforeEach(angular.mock.module('templates'));
 
-    beforeEach(angular.mock.inject(function($injector, $rootScope, $compile, Reference, $stateParams) {
+    beforeEach(angular.mock.inject(function($injector, $rootScope, $compile, reference, $stateParams) {
         $stateParams.issue = 2;
 
         httpBackend = $injector.get('$httpBackend');
@@ -17,7 +17,7 @@ describe('File Directive', function() {
 
         });
 
-        Reference = Reference;
+        Reference = reference;
         scope = $rootScope.$new();
         element = $compile('<file></file>')(scope);
         scope.$digest();
