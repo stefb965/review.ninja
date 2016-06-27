@@ -86,7 +86,7 @@ module.exports = {
 
             var uri = mongoURI.parse(process.env.MONGODB || process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/reviewninja');
 
-            var host = uri.hosts.map(h => h.host + ':' + h.port).join(',');
+            var host = uri.hosts.map(function(h) { return h.host + ':' + h.port; }).join(',');
 
             var opts = [];
 
