@@ -29,7 +29,7 @@
         <td style="border-bottom: 0;">
           <p>
             <strong>{{ thread.author }}</strong> reviewed <br />
-            {{ thread.body | limitTo:100 }}<span ng-show="thread.body.length > 100">...</span><br />
+            <span truncate="thread.html"></span>
             <small moment="thread.last_updated"></small>
           </p>
         </td>

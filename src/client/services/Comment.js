@@ -4,7 +4,7 @@
 // Comment Factory
 // *****************************************************
 
-module.factory('Comment', ['Reference', function(Reference) {
+module.factory('Comment', ['Reference', 'Markdown', function(Reference, Markdown) {
 
     var thread = {};
 
@@ -44,7 +44,7 @@ module.factory('Comment', ['Reference', function(Reference) {
             var ref = comment.commit_id && comment.position ? curr : orig;
             var str = Reference.get(ref.sha, ref.path, ref.position);
 
-            thread[str] = thread[str] || {
+            thread[str] = thread[str] || Markdown.render({
                 sha: ref.sha,
                 add: orig,
                 path: ref.path,
@@ -57,7 +57,7 @@ module.factory('Comment', ['Reference', function(Reference) {
                 anchor: Reference.anchor(ref.sha, ref.path, ref.position),
                 position: ref.position,
                 comments: []
-            };
+            });
 
             thread[str].comments.push(comment);
             thread[str].last_updated = comment.created_at;

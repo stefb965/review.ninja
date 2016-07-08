@@ -5,7 +5,8 @@
     "github-fork-ribbon-css": "~0.1.1",
     "angular-filter": "~0.5.4",
     "bootstrap": "~3.3.5",
-    "ngInfiniteScroll": "~1.2.1"
+    "ngInfiniteScroll": "~1.2.1",
+    "jquery-truncate-html": "jquery-truncate#*"
   },
   "devDependencies": {
     "should": "~3.3.1",
