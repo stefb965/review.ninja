@@ -86,9 +86,13 @@ module.exports = {
 
             var uri = mongoURI.parse(process.env.MONGODB || process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/reviewninja');
 
-            var host = uri.hosts.map(function(h) { return h.host + ':' + h.port; }).join(',');
+            var host = uri.hosts.map(function(h) { return h.host + ':' + (h.port || '27017'); }).join(',');
 
             var opts = [];
+
+            // This is a hack
+            // please see: https://github.com/emirotin/mongodb-migrations/issues/5
+            uri.options = uri.options || {ssl: 'false'};
 
             for(var key in uri.options) {
                 opts.push(key + '=' + uri.options[key]);
