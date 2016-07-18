@@ -164,6 +164,14 @@ module.controller('PullCtrl', [
             }
         };
 
+        $scope.updateReviewComment = function(comment, ref) {
+            if(comment && comment.body) {
+
+                console.log(comment, comment.id);
+
+            }
+        };
+
         $scope.addComment = function(comment) {
             if(comment && comment.body) {
                 $scope.commenting = $HUB.wrap('issues', 'createComment', {

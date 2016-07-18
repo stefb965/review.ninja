@@ -47,6 +47,17 @@ module.factory('Markdown', ['$HUB', '$stateParams', function($HUB, $stateParams)
             }
 
             return obj;
+        },
+
+        html: function(body, call) {
+            $HUB.wrap('markdown', 'render', {
+                text: body,
+                mode: 'gfm',
+                context: $stateParams.user + '/' + $stateParams.repo
+            }, function(err, markdown) {
+                var html = err ? null : label(markdown.value);
+                call(html);
+            });
         }
     };
 }]);
