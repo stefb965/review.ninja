@@ -26,10 +26,39 @@
             <div class="panel panel-default comment">
               <div class="panel-heading">
                 <div class="panel-arrow"></div>
-                <a ng-href="{{ comment.user.html_url }}"><strong>{{ comment.user.login }}</strong></a> 
-                commented <a moment="comment.created_at" ng-href="{{ comment.html_url }}"></a>
+                  <a ng-href="{{ comment.user.html_url }}"><strong>{{ comment.user.login }}</strong></a> 
+                  commented <a moment="comment.created_at" ng-href="{{ comment.html_url }}"></a>
+                  <a href="" 
+                     ng-show="!comment.edit && repo.permissions.admin"
+                     class="btn btn-default btn-xs pull-right"
+                     ng-click="comment.edit=true">
+                     edit
+                  </a>
               </div>
-              <div class="panel-body" ng-bind-html="comment.html"></div>
+              <div class="panel-body" ng-bind-html="comment.html" ng-show="!comment.edit"></div>
+              <textarea class="form-control" 
+                        ng-model="comment.body" 
+                        ng-show="comment.edit"
+                        rows="4" 
+                        text-complete="review"
+                        ui-keypress="{'ctrl-13 meta-65': 'updateReviewComment(comment); $event.preventDefault();'}"
+                        ui-keydown="{'meta-13': 'updateReviewComment(comment); $event.preventDefault();'}">
+              </textarea>
+            </div>
+            <div ng-show="comment.edit" class="pull-right" style="margin: -10px 0 15px;">
+              <button
+                class="btn btn-default" 
+                style="margin-right: 5px;"
+                ng-click="comment.edit=false">
+                Cancel
+              </button>
+              <button 
+                type="submit"  
+                class="btn btn-primary"
+                ng-click="updateReviewComment(comment)"
+                ng-disabled="!comment.body">
+                Update
+              </button>
             </div>
           </td>
         </tr>
