@@ -164,12 +164,12 @@ module.controller('PullCtrl', [
             }
         };
 
-        $scope.updateReviewComment = function(comment, ref) {
+        var updateComment = function(comment, obj, fun) {
             if(comment && comment.body) {
-
-                $HUB.call('pullRequests', 'updateComment', {
+                $HUB.call(obj, fun, {
                     user: $stateParams.user,
                     repo: $stateParams.repo,
+                    id: comment.id,
                     number: comment.id,
                     body: comment.body
                 }, function(err, c) {
@@ -180,8 +180,15 @@ module.controller('PullCtrl', [
                         });
                     }
                 });
-
             }
+        };
+
+        $scope.updateReviewComment = function(comment) {
+            updateComment(comment, 'pullRequests', 'updateComment');
+        };
+
+        $scope.updateIssueComment = function(comment) {
+            updateComment(comment, 'issues', 'editComment');
         };
 
         $scope.addComment = function(comment) {
