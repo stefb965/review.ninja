@@ -164,6 +164,26 @@ module.controller('PullCtrl', [
             }
         };
 
+        $scope.updateReviewComment = function(comment, ref) {
+            if(comment && comment.body) {
+
+                $HUB.call('pullRequests', 'updateComment', {
+                    user: $stateParams.user,
+                    repo: $stateParams.repo,
+                    number: comment.id,
+                    body: comment.body
+                }, function(err, c) {
+                    if(!err) {
+                        Markdown.html(c.value.body, function(html) {
+                            comment.edit = false;
+                            comment.html = html;
+                        });
+                    }
+                });
+
+            }
+        };
+
         $scope.addComment = function(comment) {
             if(comment && comment.body) {
                 $scope.commenting = $HUB.wrap('issues', 'createComment', {
