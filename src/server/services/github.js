@@ -20,11 +20,19 @@ module.exports = {
         });
 
         if(!obj || !github[obj]) {
-            return done('obj required/obj not found');
+            if(typeof done === 'function') {
+                done('obj required/obj not found');
+            }
+
+            return;
         }
 
         if(!fun || !github[obj][fun]) {
-            return done('fun required/fun not found');
+            if(typeof done === 'function') {
+                done('fun required/fun not found');
+            }
+
+            return;
         }
 
         if(token) {

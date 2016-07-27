@@ -2,6 +2,7 @@
     "watch": [
         "app.js",
         "src/config.js",
-        "src/server/"
+        "src/server/",
+        "src/tests/"
     ]
 }

@@ -23,7 +23,7 @@ module.controller('RepoCtrl', ['$scope', '$stateParams', '$modal', '$timeout', '
         //
 
         var setStatus = function(pull) {
-            pull.statuses = $HUB.call('statuses', 'getCombined', {
+            pull.statuses = $HUB.call('repos', 'getCombinedStatus', {
                 user: $stateParams.user,
                 repo: $stateParams.repo,
                 sha: pull.head.sha

@@ -46,7 +46,7 @@ module.controller('PullCtrl', [
         $scope.pull = Pull.status(pull.value) && Pull.stars(pull.value, true) && Markdown.render(pull.value);
 
         // get the combined statuses
-        $scope.status = $HUB.call('statuses', 'getCombined', {
+        $scope.status = $HUB.call('repos', 'getCombinedStatus', {
             user: $stateParams.user,
             repo: $stateParams.repo,
             sha: $scope.pull.head.sha
@@ -184,7 +184,7 @@ module.controller('PullCtrl', [
         };
 
         $scope.updateReviewComment = function(comment) {
-            updateComment(comment, 'pullRequests', 'updateComment');
+            updateComment(comment, 'pullRequests', 'editComment');
         };
 
         $scope.updateIssueComment = function(comment) {
@@ -249,7 +249,7 @@ module.controller('PullCtrl', [
 
         socket.on($stateParams.user + ':' + $stateParams.repo + ':' + 'status', function(args) {
             if($scope.pull.head.sha === args.sha) {
-                $HUB.call('statuses', 'getCombined', {
+                $HUB.call('repos', 'getCombinedStatus', {
                     user: $stateParams.user,
                     repo: $stateParams.repo,
                     sha: $scope.pull.head.sha

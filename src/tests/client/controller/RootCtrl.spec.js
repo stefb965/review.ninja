@@ -14,7 +14,7 @@ describe('Root Controller', function() {
 
         httpBackend.when('GET', '/config').respond({});
 
-        httpBackend.when('POST', '/api/github/wrap', '{"obj":"user","fun":"get","arg":' + JSON.stringify({
+        httpBackend.when('POST', '/api/github/wrap', '{"obj":"users","fun":"get","arg":' + JSON.stringify({
         }) + '}').respond({
             data: {
                 id: 2757082,
