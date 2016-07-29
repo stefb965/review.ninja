@@ -15,7 +15,7 @@ module.controller('HomeCtrl', ['$rootScope', '$scope', '$state', '$stateParams',
 
         $rootScope.promise.then(function(user) {
             var count = 0;
-            var repos = user ? user.value.repos : [];
+            var repos = user && user.value ? user.value.repos : [];
 
             $scope.loaded = count === repos.length;
 

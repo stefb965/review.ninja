@@ -36,10 +36,10 @@ router.all('/stats/star', function(req, res) {
 
 router.all('/stats/release', function(req, res) {
     github.call({
-        obj: 'releases',
-        fun: 'latestRelease',
+        obj: 'repos',
+        fun: 'getLatestRelease',
         arg: {
-            owner: 'reviewninja',
+            user: 'reviewninja',
             repo: 'review.ninja',
             basicAuth: config.server.github.user ? {
                 user: config.server.github.user,

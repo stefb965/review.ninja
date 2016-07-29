@@ -32,8 +32,8 @@ module.exports = {
                 }
 
                 github.call({
-                    obj: 'statuses',
-                    fun: 'create',
+                    obj: 'repos',
+                    fun: 'createStatus',
                     arg: {
                         user: args.user,
                         repo: args.repo,
