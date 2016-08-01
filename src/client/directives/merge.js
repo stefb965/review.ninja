@@ -3,7 +3,7 @@
 // Merge Directive
 // *****************************************************
 
-module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', function($HUB, $stateParams, $timeout, $filter) {
+module.directive('mergeButton', ['$HUB', '$stateParams', '$rootScope', '$timeout', '$filter', function($HUB, $stateParams, $rootScope, $timeout, $filter) {
     return {
         restrict: 'E',
         templateUrl: '/directives/templates/merge.html',
@@ -16,6 +16,8 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
             reposettings: '='
         },
         link: function(scope, elem, attrs) {
+
+            scope.$config = $rootScope.$config;
 
             var text = {
                 failure: 'failed',
@@ -98,11 +100,13 @@ module.directive('mergeButton', ['$HUB', '$stateParams', '$timeout', '$filter', 
                 });
             };
 
-            scope.merge = function() {
+            scope.merge = function(squash) {
                 scope.merging = $HUB.call('pullRequests', 'merge', {
                     user: $stateParams.user,
                     repo: $stateParams.repo,
-                    number: $stateParams.number
+                    number: $stateParams.number,
+                    squash: squash,
+                    headers: {'Accept': 'application/vnd.github.polaris-preview+json'}
                 });
             };
 
