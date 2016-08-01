@@ -6,7 +6,7 @@
 module.controller('RootCtrl', ['$rootScope', '$scope', '$stateParams', '$state', '$HUB', '$RPC', '$HUBService',
     function($rootScope, $scope, $stateParams, $state, $HUB, $RPC, $HUBService) {
 
-        $rootScope.promise = $HUBService.wrap('user', 'get', {});
+        $rootScope.promise = $HUBService.wrap('users', 'get', {});
 
         $rootScope.promise.then(function(user) {
             $rootScope.user = user;

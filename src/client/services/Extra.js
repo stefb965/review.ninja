@@ -8,7 +8,7 @@ module.factory('Extra', ['$HUB', function($HUB) {
 
     var user, repo, collaborators;
 
-    var emojis = $HUB.call('misc', 'emojis');
+    var emojis = $HUB.call('misc', 'getEmojis');
 
     var flags = [
         {

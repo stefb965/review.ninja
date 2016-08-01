@@ -16,41 +16,26 @@ var Repo = require('mongoose').model('Repo');
 module.exports = {
 
     authorization: function(req, done) {
-        var request = (config.server.github.protocol === 'https' ? https : http).request({
-            host: config.server.github.api,
-            port: config.server.github.port,
-            path: (config.server.github.pathprefix || '') + '/applications/' + config.server.github.client + '/tokens/' + req.user.token,
-            method: 'GET',
-            headers: {
-                'Authorization': 'Basic ' + new Buffer(config.server.github.client + ':' + config.server.github.secret).toString('base64'),
-                'User-Agent': 'ReviewNinja'
+        github.call({
+            obj: 'authorization',
+            fun: 'check',
+            arg: {
+                access_token: req.user.token,
+                client_id: config.server.github.client
+            },
+            basicAuth: {
+                user: config.server.github.client,
+                pass: config.server.github.secret
             }
-        }, function(response) {
-            var str = '';
+        }, function(err, auth) {
 
-            response.on('data', function(chunk) {
-                str += chunk;
-            });
+            var res = !err ? {
+                id: auth.id,
+                html_url: url.githubBase + '/settings/connections/' + auth.id
+            } : null;
 
-            response.on('end', function() {
-
-                var err = null, res = null;
-
-                try {
-                    var  id = JSON.parse(str).id;
-                    res = {
-                        id: id,
-                        html_url: url.githubBase + '/settings/connections/' + id
-                    };
-                } catch(ex) {
-                    err = true;
-                }
-
-                done(err, res);
-            });
+            done(err, res);
         });
-
-        request.end();
     },
 
     addRepo: function(req, done) {

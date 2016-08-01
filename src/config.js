@@ -7,6 +7,8 @@
  * @overview Configuration Module
  */
 
+
+var merge = require('merge');
 var mongoURI = require('mongodb-uri');
 
 module.exports = {
@@ -86,24 +88,24 @@ module.exports = {
 
             var uri = mongoURI.parse(process.env.MONGODB || process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/reviewninja');
 
-            var host = uri.hosts.map(function(h) { return h.host + ':' + (h.port || '27017'); }).join(',');
+            var config = uri.options && uri.options.replicaSet ? {
+                replicaset: {
+                    name: uri.options.replicaSet,
+                    members: uri.hosts.map(function(m) { return { host: m.host, port: m.port || 27017 }; })
+                }
+            } : {
+                host: uri.hosts[0].host,
+                port: uri.hosts[0].port || 27017
+            };
 
-            var opts = [];
-
-            // This is a hack
-            // please see: https://github.com/emirotin/mongodb-migrations/issues/5
-            uri.options = uri.options || {ssl: 'false'};
-
-            for(var key in uri.options) {
-                opts.push(key + '=' + uri.options[key]);
-            }
-
-            return {
+            return merge({
+                db: uri.database,
                 user: uri.username,
                 password: uri.password,
-                host: host + '/' + uri.database + '?' + opts.join('&'),
-                collection: 'migrations'
-            };
+                collection: 'migrations',
+                ssl: uri.options && uri.options.ssl
+            }, config);
+
         })(),
 
         mongodb_uri: process.env.MONGODB || process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/reviewninja',

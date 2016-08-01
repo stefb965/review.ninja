@@ -43,8 +43,9 @@
     </small>
   </div>
 
-  <button type="button"
-          class="btn btn-block"
+  <button ng-show="$config.enterprise && permissions.push && !pull.merged"
+          type="button"
+          class="btn btn-block dropdown-toggle"
           ng-class="{
             'btn-success': status.state==='success' && !pull.merged,
             'btn-warning': status.state==='pending' && !pull.merged,
@@ -52,12 +53,42 @@
             'btn-merged':  pull.merged,
             'wobble-vertical': $root.ob === 'ob-merge'
           }"
-          ng-show="permissions.push && !pull.merged"
+          data-toggle="dropdown"
           ng-disabled="!pull.mergeable || (required && !required.pass && !required.over)"
           ng-click="merge()">
     <span class="octicon octicon-git-merge"></span> {{ status.state==='failure' ? 'Merge with caution!' : 'Merge pull request'}}
     <i class="fa fa-spinner fa-spin" ng-show="merging.loading"></i>
   </button>
+
+  <div class="btn-group btn-block dropdown" ng-show="!$config.enterprise && permissions.push && !pull.merged">
+    <button type="button"
+            class="btn btn-block dropdown-toggle"
+            ng-class="{
+              'btn-success': status.state==='success' && !pull.merged,
+              'btn-warning': status.state==='pending' && !pull.merged,
+              'btn-danger':  status.state==='failure' && !pull.merged,
+              'btn-merged':  pull.merged,
+              'wobble-vertical': $root.ob === 'ob-merge'
+            }"
+            data-toggle="dropdown"
+            ng-disabled="!pull.mergeable || (required && !required.pass && !required.over)">
+      <span class="octicon octicon-git-merge"></span> {{ status.state==='failure' ? 'Merge with caution!' : 'Merge pull request'}}
+      <i class="fa fa-spinner fa-spin" ng-show="merging.loading"></i>
+    </button>
+    <ul class="dropdown-menu btn-block" role="menu">
+      <li>
+        <a href="" ng-click="merge()" style="white-space: normal;">
+          <strong>Create a merge commit</strong><br />
+          All commits from this branch will be added to the base branch via a merge commit.
+        </a>
+        <a href="" ng-click="merge()" style="white-space: normal;">
+          <strong>Squash and merge</strong><br />
+          <span ng-show="pull.commits > 1">The {{ pull.commits }} commits from this branch will be combined into one commit in the base branch.</span>
+          <span ng-show="pull.commits < 2">The {{ pull.commits }} commit from this branch will be added to the base branch.</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 
   <span ng-show="pull.merged" style="font-size: 16px; font-weight: normal;">
     <span class="octicon octicon-git-pull-request"></span> Merged

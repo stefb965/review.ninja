@@ -24,7 +24,7 @@ module.factory('Pull', ['$HUB', '$RPC', '$stateParams', '$rootScope', function($
                             }
                         });
                         if(avatar) {
-                            star.user = $HUB.call('user', 'getFrom', {
+                            star.user = $HUB.call('users', 'getForUser', {
                                 user: star.name
                             });
                         }

@@ -73,11 +73,11 @@ describe('Pull Controller', function() {
         httpBackend = $injector.get('$httpBackend');
         httpBackend.when('GET', '/config').respond({});
 
-        httpBackend.expect('POST', '/api/github/call', '{"obj":"misc","fun":"emojis"}').respond({
+        httpBackend.expect('POST', '/api/github/call', '{"obj":"misc","fun":"getEmojis"}').respond({
             value: 'success'
         });
 
-        httpBackend.expect('POST', '/api/github/call', '{"obj":"statuses","fun":"getCombined","arg":' + JSON.stringify({
+        httpBackend.expect('POST', '/api/github/call', '{"obj":"repos","fun":"getCombinedStatus","arg":' + JSON.stringify({
           user: 'gabe',
           repo: 'test',
           sha: 'abcd1234'
@@ -240,7 +240,7 @@ describe('Pull Controller', function() {
     it('should update status with websocket event', function() {
         var PullCtrl = createCtrl();
         scope.status = {};
-        httpBackend.expect('POST', '/api/github/call', '{"obj":"statuses","fun":"getCombined","arg":' + JSON.stringify({
+        httpBackend.expect('POST', '/api/github/call', '{"obj":"repos","fun":"getCombinedStatus","arg":' + JSON.stringify({
           user: 'gabe',
           repo: 'test',
           sha: 'abcd1234'
