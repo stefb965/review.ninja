@@ -17,7 +17,7 @@ var getReviewer = function(id, user, token, done) {
 
     github.call({
         obj: 'orgs',
-        fun: 'getTeamMember',
+        fun: 'getTeamMembership',
         arg: {
             id: id,
             user: user
