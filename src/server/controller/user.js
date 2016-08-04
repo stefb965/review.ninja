@@ -34,7 +34,7 @@ router.get('/auth/github/callback',
     }),
     function(req, res) {
         github.call({
-            obj: 'user',
+            obj: 'users',
             fun: 'get',
             arg: {},
             token: req.user.token
