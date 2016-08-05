@@ -52,8 +52,8 @@ router.all('/*', function(req, res) {
 
             request(config.terms, function(err, response, rawGist) {
                 github.call({
-                    obj: 'markdown',
-                    fun: 'render',
+                    obj: 'misc',
+                    fun: 'renderMarkdown',
                     arg: {
                         text: rawGist
                     },
@@ -66,7 +66,7 @@ router.all('/*', function(req, res) {
 
                     req.session.next = req.path;
                     var template = fs.readFileSync('src/server/templates/terms.ejs', 'utf-8');
-                    res.send(ejs.render(template, {termsHtml: renderedHtml}));
+                    res.send(ejs.render(template, {termsHtml: renderedHtml.data}));
                 });
             });
         });
