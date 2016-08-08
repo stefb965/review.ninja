@@ -14,8 +14,8 @@ module.exports = {
         var template = fs.readFileSync('./src/server/templates/invite.ejs', 'utf-8');
 
         github.call({
-            obj: 'user',
-            fun: 'getFrom',
+            obj: 'users',
+            fun: 'getForUser',
             arg: {user: req.args.invitee},
             token: req.user.token
         }, function(err, user) {
