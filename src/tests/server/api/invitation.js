@@ -18,8 +18,8 @@ describe('invitation:invite', function(done) {
      it('should send an invitation to the collaborator', function(done) {
 
         var githubStub = sinon.stub(github, 'call', function(args, done) {
-            assert.equal(args.obj, 'user');
-            assert.equal(args.fun, 'getFrom');
+            assert.equal(args.obj, 'users');
+            assert.equal(args.fun, 'getForUser');
             assert.equal(args.arg.user, 'invitee');
             assert.equal(args.token, 'token');
             done(null, {email: 'email@email.com'});
