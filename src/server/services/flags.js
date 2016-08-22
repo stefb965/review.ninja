@@ -46,7 +46,7 @@ module.exports = {
     },
 
     star: function(comment) {
-        var starRegex = /\!star|\!ninjastar|\+1|lgtm|\:thumbsup\:|\:star\:|\u2B50|\uD83D\uDC4D/gi;
+        var starRegex = /\!star|\!ninjastar|\+1|lp?gtm|\:thumbsup\:|\:star\:|\u2B50|\uD83D\uDC4D/gi;
         return !!comment.match(starRegex);
     },
 

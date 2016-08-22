@@ -10,7 +10,7 @@ module.factory('Markdown', ['$HUB', '$stateParams', function($HUB, $stateParams)
 
         var negative = /\!\bfix\b|\!\bresolve\b/g;
         var positive = /\!\bfixed\b|\!\bresolved\b|\!\bcompleted\b/g;
-        var star = /\!\bstar\b|\!\bninjastar\b|\blgtm\b/gi;
+        var star = /\!\bstar\b|\!\bninjastar\b|\blp?gtm\b/gi;
         var unstar = /\!\bunstar\b/;
 
         markdown = markdown.replace(negative, function(flag) {
