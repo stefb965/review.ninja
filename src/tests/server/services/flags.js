@@ -34,16 +34,22 @@ describe('flags:star', function() {
     var fakeStarComment3 = 'this is :thumbsup:';
     var fakeStarComment4 = 'this is 👍';
     var fakeStarComment5 = 'this is ⭐';
+    var fakeStarComment6 = 'this change lgtm';
+    var fakeStarComment7 = 'this change just lpgtm';
     var trueResult1 = flags.star(fakeStarComment1);
     var trueResult2 = flags.star(fakeStarComment2);
     var trueResult3 = flags.star(fakeStarComment3);
     var trueResult4 = flags.star(fakeStarComment4);
     var trueResult5 = flags.star(fakeStarComment5);
+    var trueResult6 = flags.star(fakeStarComment6);
+    var trueResult7 = flags.star(fakeStarComment7);
     assert.equal(trueResult1, true);
     assert.equal(trueResult2, true);
     assert.equal(trueResult3, true);
     assert.equal(trueResult4, true);
     assert.equal(trueResult5, true);
+    assert.equal(trueResult6, true);
+    assert.equal(trueResult7, true);
     done();
   });
 
