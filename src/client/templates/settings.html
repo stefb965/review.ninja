@@ -24,7 +24,7 @@
               ng-class="{'text-warning': form.$invalid}"
               class="text-right" />
             ninja star<span ng-show="repoSettings.value.threshold > 1">s</span>
-          <span ng-show="teams && teams.loaded && !teams.error && !(repoSettings.value.reviewers && !reviewTeam)">
+          <span ng-show="teams && teams.loaded && !teams.error && !(repoSettings.value.reviewers && !reviewTeam && !repo.value.permissions.admin)">
             from
             <div class="btn-group" dropdown ng-show="teams">
               <button type="button"
@@ -45,13 +45,13 @@
               </ul>
             </div>
           </span>
-          <span ng-show="teams && teams.loaded && repoSettings.value.reviewers && !reviewTeam">
+          <span ng-show="teams && teams.loaded && repoSettings.value.reviewers && !reviewTeam && !repo.value.permissions.admin">
            from the <strong>review team</strong>
           </span> needed to merge.
           <small ng-show="reviewTeam.privacy === 'secret'">
             <br />We strongly recommend <strong>{{ reviewTeam.name }}</strong> be a visible team.
           </small>
-          <small ng-show="teams && teams.loaded && repoSettings.value.reviewers && !reviewTeam">
+          <small ng-show="teams && teams.loaded && repoSettings.value.reviewers && !reviewTeam && !repo.value.permissions.admin">
             <br /><a href="https://docs.review.ninja/stars" target="_blank">Why can't I change the review team?</a>
           </small>
         </div>
