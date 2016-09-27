@@ -36,6 +36,7 @@ describe('flags:star', function() {
     var fakeStarComment5 = 'this is ⭐';
     var fakeStarComment6 = 'this change lgtm';
     var fakeStarComment7 = 'this change just lpgtm';
+    var fakeStarComment8 = 'looks good :shipit:';
     var trueResult1 = flags.star(fakeStarComment1);
     var trueResult2 = flags.star(fakeStarComment2);
     var trueResult3 = flags.star(fakeStarComment3);
@@ -43,6 +44,7 @@ describe('flags:star', function() {
     var trueResult5 = flags.star(fakeStarComment5);
     var trueResult6 = flags.star(fakeStarComment6);
     var trueResult7 = flags.star(fakeStarComment7);
+    var trueResult8 = flags.star(fakeStarComment8);
     assert.equal(trueResult1, true);
     assert.equal(trueResult2, true);
     assert.equal(trueResult3, true);
@@ -50,6 +52,7 @@ describe('flags:star', function() {
     assert.equal(trueResult5, true);
     assert.equal(trueResult6, true);
     assert.equal(trueResult7, true);
+    assert.equal(trueResult8, true);
     done();
   });
 
