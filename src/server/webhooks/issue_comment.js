@@ -3,6 +3,7 @@
 // models
 var Star = require('mongoose').model('Star');
 var User = require('mongoose').model('User');
+var Action = require('mongoose').model('Action');
 
 // services
 var star = require('../services/star');
@@ -50,7 +51,14 @@ module.exports = function(req, res) {
                             sender.token = ninja && ninja.token ? ninja.token : null;
                             star[func](pull.head.sha, user, repo, repo_uuid, number, sender, token);
                         });
+                        
                     }
+                    Action.create({
+                       uuid: req.args.repository.id,
+                       user: req.args.repository.owner.login,
+                       repo: req.args.repository.name,
+                       type: func === 'remove' ? 'star:rmv' : 'star:add'
+                    });
                 });
             }
         }
