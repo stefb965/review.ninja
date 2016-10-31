@@ -40,6 +40,13 @@ module.exports = function(req, res) {
             var thread = flags.review([comment]);
 
             if(thread.open > 0) {
+              Action.create({
+                uuid: req.args.repository.id,
+                user: req.args.repository.owner.login,
+                repo: req.args.repository.name,
+                type: 'pullRequests:createFixComment'
+              });
+
                 notification.sendmail('review_thread_opened', user, repo, repo_uuid, token, number, {
                     user: user,
                     repo: repo,
