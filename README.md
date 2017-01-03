@@ -4,6 +4,14 @@
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
+Notice
+======
+
+ReviewNinja is no longer being actively developed. With GitHub's recent addition of [pull request reviews](https://help.github.com/articles/about-pull-request-reviews/) many of the benefits of code review offered by ReviewNinja are now available in GitHub itself.
+
+We have no plans to shut down ReviewNinja, we will provide advanced notice of any possible future changes to ReviewNinja's availability. We encourage you to check out our [migration strategy](https://github.com/reviewninja/review.ninja/issues/1132) for advice and tips on moving from ReviewNinja code review to GitHub pull request reviews.
+
+
 ReviewNinja - merge with confidence
 ============
 
